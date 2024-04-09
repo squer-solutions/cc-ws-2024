@@ -1,0 +1,8 @@
+FROM confluentinc/cp-kafka-connect:7.5.0.amd64
+
+# installing required connectors 
+# jdbc connector
+# elastic search connector
+# or use: volumes:- /path/to/your/jdbc-connector.jar:/usr/share/java/kafka-connect-jdbc/jdbc-connector.jar in the docker-compose file
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.4.1
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:13.0.0

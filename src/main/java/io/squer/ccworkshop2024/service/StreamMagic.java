@@ -17,7 +17,7 @@ import java.util.concurrent.CountDownLatch;
 public class StreamMagic {
 
 
-    static final String STREAMS_APPLICATION_ID="my-streams2";
+    static final String STREAMS_APPLICATION_ID="my-streams3";
     static final String BOOTSTRAP_SERVERS_CONFIG="localhost:9092";
     static final String CLIENT_ID_CONFIG="streams-squerify-client-example";
     static final String INPUT_TOPIC = "squerdb.public.orders";
@@ -30,11 +30,9 @@ public class StreamMagic {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
-
         KStream<squerdb.public$.orders.Key, squerdb.public$.orders.Envelope> input = builder.stream(INPUT_TOPIC);
 
         input.peek((key, value) -> {
-            value.getAfter().toString();
             System.out.println("Key: " + key);
             System.out.println("Value: " + value);
             System.out.println("Value: " + value.getAfter().toString());
@@ -55,7 +53,6 @@ public class StreamMagic {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, STREAMS_APPLICATION_ID);
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_CONFIG);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put("schema.registry.url", "http://localhost:8081");
         props.put(StreamsConfig.CLIENT_ID_CONFIG, CLIENT_ID_CONFIG);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);

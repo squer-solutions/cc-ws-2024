@@ -1,0 +1,16 @@
+{
+  "connect.name": "squerdb.public.orders.Key",
+  "fields": [
+    {
+      "default": 0,
+      "name": "order_id",
+      "type": {
+        "connect.default": 0,
+        "type": "int"
+      }
+    }
+  ],
+  "name": "Key",
+  "namespace": "squerdb.public.orders",
+  "type": "record"
+}

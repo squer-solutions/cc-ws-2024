@@ -1,13 +1,15 @@
 package io.squer.ccworkshop2024;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.squer.ccworkshop2024.service.StreamMagic;
 
-@SpringBootApplication
 public class CcWorkshop2024Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(CcWorkshop2024Application.class, args);
+
+        StreamMagic streamsApp = new StreamMagic();
+
+        streamsApp.start();
+        ;
     }
 
 }

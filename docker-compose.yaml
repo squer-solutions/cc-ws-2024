@@ -1,14 +1,136 @@
+---
 version: '3.7'
-name: squer-cc-workshop
-volumes:
-  redpanda: null
 networks:
-  redpanda_network:
+  kafka_network:
     driver: bridge
 services:
+
+  broker:
+    image: confluentinc/cp-kafka:7.6.0
+    hostname: broker
+    container_name: broker
+    networks:
+      - kafka_network
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+      # Replace CLUSTER_ID with a unique base64 UUID using "bin/kafka-storage.sh random-uuid"
+      # See https://docs.confluent.io/kafka/operations-tools/kafka-tools.html#kafka-storage-sh
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.6.0
+    hostname: schema-registry
+    networks:
+      - kafka_network
+    container_name: schema-registry
+    depends_on:
+      - broker
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+
+#  connect:
+#    image: cnfldemos/cp-server-connect-datagen:0.6.4-7.6.0
+#    hostname: connect
+#    container_name: connect
+#    depends_on:
+#      - broker
+#      - schema-registry
+#    ports:
+#      - "8083:8083"
+#    environment:
+#      CONNECT_BOOTSTRAP_SERVERS: 'broker:29092'
+#      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+#      CONNECT_GROUP_ID: compose-connect-group
+#      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
+#      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+#      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+#      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
+#      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+#      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
+#      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+#      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+#      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+#      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+#      # CLASSPATH required due to CC-2422
+#      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-7.6.0.jar
+#      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+#      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+#      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+#      CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:7.6.0 #TODO: Reports as being outdated?
+    hostname: control-center
+    container_name: control-center
+    networks:
+      - kafka_network
+    depends_on:
+      - broker
+      - schema-registry
+      - debezium
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'broker:29092'
+      CONTROL_CENTER_CONNECT_CONNECT-DEFAULT_CLUSTER: 'debezium:8083'
+      CONTROL_CENTER_CONNECT_HEALTHCHECK_ENDPOINT: '/connectors'
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
+  debezium:
+    # Docs: https://hub.docker.com/r/debezium/connect
+    image: debezium/connect:2.5.4.Final
+    networks:
+      - kafka_network
+    container_name: debezium
+    environment:
+      BOOTSTRAP_SERVERS: 'broker:29092'
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: connect_configs
+      OFFSET_STORAGE_TOPIC: connect_offsets
+      KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      INTERNAL_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      INTERNAL_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+      #CONNECT_PLUGIN_PATH: "/var/lib/connect/plugins" -- If this path is set, the plugins already packaged with the
+      # Debezium container are no longer found
+    volumes:
+      - ./connect/plugins/confluentinc-kafka-connect-avro-converter-7.6.0:/kafka/connect/confluentinc-kafka-connect-avro-converter-7.6.0
+    depends_on:
+    - postgres
+    - broker
+    - schema-registry
+    ports:
+      - "8083:8083"
   postgres:
     networks:
-      - redpanda_network
+      - kafka_network
     image: debezium/postgres:16
     container_name: postgres
     ports:
@@ -25,93 +147,3 @@ services:
       - PGPASSWORD=postgrespw
     volumes:
       - ./data:/docker-entrypoint-initdb.d
-  redpanda:
-    image: docker.redpanda.com/redpandadata/redpanda:v23.3.10
-    networks:
-      - redpanda_network
-    container_name: redpanda
-    command:
-      - redpanda start
-      # Mode dev-container uses well-known configuration properties for development in containers.
-      - --mode dev-container
-      # Tells Seastar (the framework Redpanda uses under the hood) to use 1 core on the system.
-      - --smp 1
-      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
-      # Address the broker advertises to clients that connect to the Kafka API.
-      # Use the internal addresses to connect to the Redpanda brokers
-      # from inside the same Docker network.
-      # Use the external addresses to connect to the Redpanda brokers
-      # from outside the Docker network.
-      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
-      - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:18082
-      # Address the broker advertises to clients that connect to the HTTP Proxy.
-      - --advertise-pandaproxy-addr internal://redpanda:8082,external://localhost:18082
-      - --schema-registry-addr internal://0.0.0.0:8081,external://0.0.0.0:18081
-      # Redpanda brokers use the RPC API to communicate with each other internally.
-      - --rpc-addr redpanda:33145
-      - --advertise-rpc-addr redpanda:33145
-    ports:
-      - "18081:18081"
-      - "18082:18082"
-      - "19092:19092"
-      - "19644:9644"
-    volumes:
-      - redpanda:/var/lib/redpanda/data
-    healthcheck:
-      test: ["CMD-SHELL", "rpk cluster health | grep -E 'Healthy:.+true' || exit 1"]
-      interval: 15s
-      timeout: 3s
-      retries: 5
-      start_period: 5s
-  console:
-    container_name: redpanda-console
-    image: docker.redpanda.com/redpandadata/console:v2.4.5
-    networks:
-      - redpanda_network
-    entrypoint: /bin/sh
-    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
-    environment:
-      CONFIG_FILEPATH: /tmp/config.yml
-      CONSOLE_CONFIG_FILE: |
-        kafka:
-          brokers: ["redpanda:9092"]
-          schemaRegistry:
-            enabled: true
-            urls: ["http://redpanda:8081"]
-        redpanda:
-          adminApi:
-            enabled: true
-            urls: ["http://redpanda:9644"]
-        connect:
-          enabled: true
-          clusters:
-            - name: squer-connect
-              url: http://debezium:8083
-    ports:
-      - "8080:8080"
-    depends_on:
-      - redpanda
-  debezium:
-    # Docs: https://hub.docker.com/r/debezium/connect
-    image: debezium/connect:2.5.4.Final
-    networks:
-      - redpanda_network
-    container_name: debezium
-    environment:
-      BOOTSTRAP_SERVERS: redpanda:9092
-      GROUP_ID: 1
-      CONFIG_STORAGE_TOPIC: connect_configs
-      OFFSET_STORAGE_TOPIC: connect_offsets
-      KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      INTERNAL_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      INTERNAL_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://redpanda:8081'
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://redpanda:8081'
-      #CONNECT_PLUGIN_PATH: "/var/lib/connect/plugins" -- If this path is set, the plugins already packaged with the
-      # Debezium container are no longer found
-    volumes:
-      - ./connect/plugins/confluentinc-kafka-connect-avro-converter-7.6.0:/kafka/connect/confluentinc-kafka-connect-avro-converter-7.6.0
-    depends_on: [postgres, redpanda]
-    ports:
-      - "8083:8083"

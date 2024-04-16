@@ -14,7 +14,7 @@ docker compose up -it
 ```
 
 The command will fetch the images for the kafka broker and schema registry and creates a container for each of them, 
-they are running in interactice mode, you could see all the logs on the terminal for each service, as soon as you quite 
+they are running in interactive mode, you could see all the logs on the terminal for each service, as soon as you quite 
 terminal or hit `Ctrl + C` those containers will stop. 
 
 To clean up resources, run 
@@ -31,3 +31,10 @@ docker compose up -d
 
 This will run the containers in detached mode from terminal.
 
+## Congratulations
+
+Great work! Now you have a broker running and ready to accept requests!
+
+## Related Documents:
+
+[Docker Images From Confluent](https://hub.docker.com/search?q=confluentinc%2Fcp)

@@ -49,6 +49,7 @@ To create the Kafka Connect you need to have the following in your docker-compos
     depends_on:
       - broker
       - schema-registry
+      - postgresql
     ports:
       - "8083:8083"
     environment:

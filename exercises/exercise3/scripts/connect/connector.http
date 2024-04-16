@@ -18,7 +18,7 @@ Content-Type: application/json
   "timestamp.column.name": "ts",
   
   "table.whitelist": "customers", 
-  "topic.prefix": "postgres__customers_",
+  "topic.prefix": "postgres_customers_",
 
   "key.converter": "org.apache.kafka.connect.storage.StringConverter",
   "value.converter": "io.confluent.connect.avro.AvroConverter",

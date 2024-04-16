@@ -1,71 +1,185 @@
 # Interact with the Broker
 
-## Spin up the Broker
+## Spin up a Databse
 
-From [exercise one](../exercise1/README.md) you already know how to spin up a kafka broker, enter the folder `exercise2`
-and run the following command: (if you have brought the service down from the previous exercise)
+To add a postgres database to your existing docker compose files, add the following part to them:
 
-```bash
-docker compose up -d
+```yaml
+  postgresql:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./scripts/database/initialize-database.sql:/docker-entrypoint-initdb.d/initialize-database.sql
+    networks:
+      - kafka_network
 ```
 
-After the services are up and running, we need to bash into the running container of the broker:
+Use a user interface of choice if you want to explore the database, to connect using terminal: 
 
 ```bash
-docker exec -it broker bash
+docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
 ```
 
-when you are inside the container, run the following command to create your first topic:
+then run you sql queries: 
 
 ```bash
-kafka-topics --create --topic my-first-topic --replication-factor 1 --partitions 3 --bootstrap-server localhost:9092
+select * from customers;
 ```
-
-Congratulations! you have created your very first topic!
-
-## Produce Messages
-
-To produce messages. for now, we want to use a `console producer` provided by the confluent and kafka for ease of use
-and testing purposes.
-
-use the above-mentioned approach to be in the container's console (if you are not yet)
-
-run the following command to produce a message into the created topic: 
 
 ```bash
-kafka-console-producer --topic my-first-topic\
-  --bootstrap-server localhost:9092\ 
-  --property parse.key=true\ #specifying that you will provide a key
-  --property key.separator=":" # the separator of the key and the value
+select * from orders;
 ```
 
-After you hit enter the prompt is still active for the **Next Message**
+## Create Kafka Connect Image
 
+To create the Kafka Connect you need to have the following in your docker-compose file:
 
-## Consume Messages
-
-To consume messages, open another terminal, and get into the broker's container:
-
-```bash
-docker exec -it broker bash
+```yaml
+  connect:
+    image: local-image/cc-ws-2024-kafka-connect-jdbc:latest
+    build:
+      context: .
+      dockerfile: ./connect/Dockerfile
+    container_name: connect
+    depends_on:
+      - broker
+      - schema-registry
+    ports:
+      - "8083:8083"
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: broker:29092 # this should refer to the advertised listeners on the broker
+      CONNECT_REST_PORT: 8083
+      CONNECT_REST_ADVERTISED_HOST_NAME: "connect"
+      CONNECT_GROUP_ID: compose-kafka-connect-group
+      CONNECT_CONFIG_STORAGE_TOPIC: _kafka-connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: _kafka-connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: _kafka-connect-status
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+      CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
+    networks:
+      - kafka_network
 ```
 
-in the console use the following command to consume messages from the beginning of time from the specified topic
+Now you could run curl or http requests against the worker inside the kafka connect container:
 
-```bash
-kafka-console-consumer --topic my-first-topic --bootstrap-server localhost:9092\
-  --from-beginning\
-  --property key.separator=":"\
-  --property print.key=true # also prints the key on the console, if not specified only the value is shown
+This request will return a list of active connectors in this container
+
+```http request
+GET http://localhost:8083/connectors
 ```
 
-If you are just interested in the new messages then remove the `--from-beginning` flag from the command.
+To create a **source connector** run the following command: 
+
+```http request
+PUT http://localhost:8083/connectors/jdbc_source_connector_customers/config
+Content-Type: application/json
+
+{
+  "tasks.max": "1",
+  "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+  "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+  "connection.user": "postgres",
+  "connection.password": "postgres",
+  "mode": "timestamp",
+  "timestamp.column.name": "ts",
+  "table.whitelist": "customers", 
+  "topic.prefix": "postgres__customers_",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schemas.enable": "false",
+  "value.converter.schema.registry.url": "http://schema-registry:8081"
+}
+
+```
+
+## Control Center
+
+It would be nice if there were a way to be able to see all these information in one place as a dashboard, well, there is,
+add the following lines in your docker-compose file and run `docker compose up`
+
+```yaml
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:7.6.1
+    hostname: control-center
+    container_name: control-center
+    networks:
+      - kafka_network
+    depends_on:
+      - broker
+      - schema-registry
+      - connect
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'broker:29092'
+      CONTROL_CENTER_CONNECT_HEALTHCHECK_ENDPOINT: '/connectors'
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
+```
+
+Now you coudld navigate around and see topics, connectors, etc.
+
+if you check carefully you will see that there are messages in you topic;
+go to your postgres database update a customer or insert a new one, then get back to topics and refresh, 
+there should be a new message.
+
+Take a careful look, what is weird? Yes, That's right, the messages do not have `key`, here transformers could help to
+convert a column into a message key.
+
+Drop the existing connector first:
+
+```http request
+DELETE http://localhost:8083/connectors/jdbc_source_connector_customers
+```
+
+and add the following lines to the `body` of the curl/http command for creating a new connector:
+
+```json
+"transforms": "copyFieldToKey, extractKeyFromStruct",
+"transforms.copyFieldToKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+"transforms.copyFieldToKey.fields": "user_name",
+"transforms.extractKeyFromStruct.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+"transforms.extractKeyFromStruct.field": "user_name"
+```
+
+Here we set a pipeline of transformers, an string of comma-separated values, then for each transfomer in the pipeline 
+we have defined what it should do.
+
+The first one copies the value of the specified field into a  struct, that looks like 
+`Struct{user_name=<value_of_the_column>}` and the second one extracts the field from this struct.
+
+Now, again change something in the postgres data, and compare the result with the previous messages.
+
+## Exercise
+
+Create a JDBC source connector for the orders table. Use `customer_id` as message key.
 
 ## Congratulations
 
-Great work! We just created our first topic and produced a message which both it's **key** and **value** where of type `string`
+Great work! So far we have created a `JDBC Source Connector` that pushes messages automatically to a topic,
+when the `ts` filed in the database gets updated! 
 
 ## Related Documents
 
-[Confluent CLI](https://docs.confluent.io/confluent-cli/current/overview.html): The Confluent command-line interface (CLI), `confluent`, enables developers to manage both Confluent Cloud and Confluent Platform
-[kCat](https://github.com/edenhill/kcat): A tool to interact with kafka
+[Run Postgres on Docker](https://hub.docker.com/_/postgres)
+[Kafka Connect](https://docs.confluent.io/platform/current/connect/index.html)
+[Install Connectors using Confluent Hub](https://docs.confluent.io/platform/current/connect/install.html)
+[Kafka Connectors](https://docs.confluent.io/platform/current/connect/kafka_connectors.html)
+[JDBC Source & Sink Connector](https://docs.confluent.io/kafka-connectors/jdbc/current/source-connector/overview.html)
+[Control Center Documentation](https://docs.confluent.io/platform/current/platform-quickstart.html)
+

@@ -1,0 +1,38 @@
+@CONNECTORS = http://localhost:8083/connectors
+
+### GET list of Connectors
+GET {{CONNECTORS}}
+
+### Create a SOURCE connector from Postgres
+PUT {{CONNECTORS}}/jdbc_source_connector_customers/config
+Content-Type: application/json
+
+{
+  "tasks.max": "1",
+  "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+  "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+  "connection.user": "postgres",
+  "connection.password": "postgres",
+  
+  "mode": "timestamp",
+  "timestamp.column.name": "ts",
+  
+  "table.whitelist": "customers", 
+  "topic.prefix": "postgres__customers_",
+
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schemas.enable": "false",
+  "value.converter.schema.registry.url": "http://schema-registry:8081",
+
+  "transforms": "copyFieldToKey, extractKeyFromStruct",
+  "transforms.copyFieldToKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+  "transforms.copyFieldToKey.fields": "user_name",
+  "transforms.extractKeyFromStruct.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+  "transforms.extractKeyFromStruct.field": "user_name"
+  
+}
+
+
+### Delete existing connector
+DELETE {{CONNECTORS}}/jdbc_source_connector_customers

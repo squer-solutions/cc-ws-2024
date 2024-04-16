@@ -1,7 +1,7 @@
 ---
 version: '3.7'
 networks:
-  cc-ws-2024:
+  kafka_network:
     driver: bridge
 services:
 
@@ -33,7 +33,7 @@ services:
       # See https://docs.confluent.io/kafka/operations-tools/kafka-tools.html#kafka-storage-sh
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
     networks:
-      - cc-ws-2024
+      - kafka_network
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.6.1
@@ -48,7 +48,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
     networks:
-      - cc-ws-2024
+      - kafka_network
   
   postgresql:
     # *-----------------------------*
@@ -65,4 +65,67 @@ services:
     volumes:
       - ./scripts/database/initialize-database.sql:/docker-entrypoint-initdb.d/initialize-database.sql
     networks:
-      - cc-ws-2024
+      - kafka_network
+  
+  connect:
+    image: local-image/cc-ws-2024-kafka-connect-jdbc:latest
+    build:
+      context: .
+      dockerfile: ./connect/Dockerfile
+    container_name: connect
+    depends_on:
+      - broker
+      - schema-registry
+    ports:
+      - "8083:8083"
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: broker:29092 # this should refer to the advertised listeners on the broker with PLAINTEXT
+      CONNECT_REST_PORT: 8083
+      CONNECT_NAME: "connect-cc-ws-2024"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "cc-ws-connect"
+      CONNECT_GROUP_ID: compose-kafka-connect-group
+      
+      CONNECT_CONFIG_STORAGE_TOPIC: _kafka-connect-configs
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_TOPIC: _kafka-connect-offsets
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+      CONNECT_STATUS_STORAGE_TOPIC: _kafka-connect-status
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+      
+      #      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      
+      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+      CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR"
+    
+    networks:
+      - kafka_network
+  
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:7.6.1 #TODO: Reports as being outdated?
+    hostname: control-center
+    container_name: control-center
+    depends_on:
+      - broker
+      - schema-registry
+      - connect
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'broker:29092'
+      CONTROL_CENTER_CONNECT_CONNECT-DEFAULT_CLUSTER: 'connect:8083'
+      CONTROL_CENTER_CONNECT_HEALTHCHECK_ENDPOINT: '/connectors'
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
+    networks:
+      - kafka_network

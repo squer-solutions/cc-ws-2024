@@ -1,4 +1,6 @@
-## Bring up the Broker
+# Broker
+
+## Spin up Kafka
 
 To have a kafka broker on your local machine, you could use docker and for that you need a docker compose file.
 

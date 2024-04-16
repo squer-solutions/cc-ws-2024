@@ -1,6 +1,6 @@
-# Interact with the Broker
+# Kafka Connect 
 
-## Spin up a Databse
+## Spin up a Database
 
 To add a postgres database to your existing docker compose files, add the following part to them:
 

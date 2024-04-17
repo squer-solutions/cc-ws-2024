@@ -1,4 +1,4 @@
-# Debezium 
+# CDC & Debezium 
 
 ## Spin up a Debezium Connect Container
 

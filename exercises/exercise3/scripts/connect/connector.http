@@ -10,7 +10,7 @@ Content-Type: application/json
 {
   "tasks.max": "1",
   "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
-  "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+  "connection.url": "jdbc:postgresql://postgres:5432/squer_db",
   "connection.user": "postgres",
   "connection.password": "postgres",
   

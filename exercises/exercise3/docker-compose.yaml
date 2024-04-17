@@ -1,5 +1,4 @@
 ---
-version: '3.7'
 networks:
   kafka_network:
     driver: bridge
@@ -60,6 +59,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=squer_db
     ports:
       - "5432:5432"
     volumes:

@@ -60,14 +60,14 @@ To create the Kafka Connect you need to have the following in your docker-compos
       CONNECT_CONFIG_STORAGE_TOPIC: _kafka-connect-configs
       CONNECT_OFFSET_STORAGE_TOPIC: _kafka-connect-offsets
       CONNECT_STATUS_STORAGE_TOPIC: _kafka-connect-status
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
       CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
       CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR"
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
     networks:
       - kafka_network
 ```
@@ -89,13 +89,16 @@ Content-Type: application/json
 {
   "tasks.max": "1",
   "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
-  "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+  "connection.url": "jdbc:postgresql://postgres:5432/squer_db",
   "connection.user": "postgres",
   "connection.password": "postgres",
+  
   "mode": "timestamp",
   "timestamp.column.name": "ts",
+  
   "table.whitelist": "customers", 
-  "topic.prefix": "postgres__customers_",
+  "topic.prefix": "postgres_customers_",
+
   "key.converter": "org.apache.kafka.connect.storage.StringConverter",
   "value.converter": "io.confluent.connect.avro.AvroConverter",
   "value.converter.schemas.enable": "false",

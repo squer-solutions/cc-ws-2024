@@ -183,4 +183,4 @@ when the `ts` filed in the database gets updated!
 [Kafka Connectors](https://docs.confluent.io/platform/current/connect/kafka_connectors.html)
 [JDBC Source & Sink Connector](https://docs.confluent.io/kafka-connectors/jdbc/current/source-connector/overview.html)
 [Control Center Documentation](https://docs.confluent.io/platform/current/platform-quickstart.html)
-
+[Docker Image Configuration Reference for Confluent Platform](https://docs.confluent.io/platform/current/installation/docker/config-reference.html#required-ak-configurations-for-kraft-mode)

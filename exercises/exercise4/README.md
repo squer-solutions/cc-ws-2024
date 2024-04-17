@@ -131,8 +131,8 @@ Activate CDC for the `public.orders` table and create a separate connector for i
 
 ## Congratulations
 
-Great work! So far we have created a `JDBC Source Connector` that pushes messages automatically to a topic,
-when the `ts` filed in the database gets updated! 
+Great work! So far we have activated `CDC` and created a `Debezium Postgres Connector` that captures the changes 
+and pushes them automatically to a target topic, when **any field** in your record changes. 
 
 ## Related Documents
 

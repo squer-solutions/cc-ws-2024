@@ -171,7 +171,24 @@ Now, again change something in the postgres data, and compare the result with th
 
 ## Exercise
 
-Create a JDBC source connector for the orders table. Use `customer_id` as message key.
+1. Create a JDBC source connector for the orders table. Use `customer_id` as message key.
+2. Use a mask transformer to [mask](https://kafka.apache.org/documentation.html#org.apache.kafka.connect.transforms.MaskField)
+`ssn` field with `xxxx-xxxxxx`
+
+<details>
+
+<summary>If you want to see the solution and not figuring out by yourself</summary>
+
+You could change the `transforms` pipeline, and add settings for the new `maskSsn` transformer:  
+
+```json
+"transforms": "copyFieldToKey, extractKeyFromStruct, maskSsn",
+
+"transforms.maskSsn.type": "org.apache.kafka.connect.transforms.MaskField$Value",
+"transforms.maskSsn.fields": "ssn",
+"transforms.maskSsn.replacement": "xxxx-xxxxxx"
+```
+</details>
 
 ## Congratulations
 
@@ -185,5 +202,6 @@ when the `ts` filed in the database gets updated!
 [Install Connectors using Confluent Hub](https://docs.confluent.io/platform/current/connect/install.html)
 [Kafka Connectors](https://docs.confluent.io/platform/current/connect/kafka_connectors.html)
 [JDBC Source & Sink Connector](https://docs.confluent.io/kafka-connectors/jdbc/current/source-connector/overview.html)
+[Included Transformations in Kafka](https://kafka.apache.org/documentation.html#connect_included_transformation)
 [Control Center Documentation](https://docs.confluent.io/platform/current/platform-quickstart.html)
 [Docker Image Configuration Reference for Confluent Platform](https://docs.confluent.io/platform/current/installation/docker/config-reference.html#required-ak-configurations-for-kraft-mode)

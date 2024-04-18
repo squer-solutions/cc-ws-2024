@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS orders;
 CREATE TABLE customers
 (
     customer_id      UUID                    NOT NULL PRIMARY KEY,
+    ssn              VARCHAR(11)             NOT NULL,
     email            VARCHAR(255)            NOT NULL,
     user_name        VARCHAR(255)            NOT NULL,
     full_name        VARCHAR(255)            NOT NULL,
@@ -48,15 +49,16 @@ CREATE TRIGGER orders_timestamp
     FOR EACH ROW EXECUTE PROCEDURE update_ts_column_on_update();
 
 
-INSERT INTO customers (customer_id, email, user_name, full_name, delivery_address, delivery_zipcode, delivery_city,
+INSERT INTO customers (customer_id, ssn, email, user_name, full_name, delivery_address, delivery_zipcode, delivery_city,
                        billing_address, billing_zipcode, billing_city)
-VALUES ('f56c8938-6452-478b-84b5-803b9ea5152d', 'martin.schwarz@fake.com', 'm.schwarz', 'martin Schwarz',
+VALUES ('f56c8938-6452-478b-84b5-803b9ea5152d', '1234 230185', 'martin.schwarz@fake.com', 'm.schwarz', 'martin Schwarz',
         'Marxergasse 17', '1030', 'Wien', NULL,
         NULL, Null);
 
-INSERT INTO customers (customer_id, email, user_name, full_name, delivery_address, delivery_zipcode, delivery_city,
+INSERT INTO customers (customer_id, ssn, email, user_name, full_name, delivery_address, delivery_zipcode, delivery_city,
                        billing_address, billing_zipcode, billing_city)
-VALUES ('31e7a241-d570-4961-981d-4aea2b20d22e', 'shahab.ganji@fake.com', 'shahab', 'Shahab Ganji', 'Marxergasse 17',
+VALUES ('31e7a241-d570-4961-981d-4aea2b20d22e', '8755 051290', 'shahab.ganji@fake.com', 'shahab', 'Shahab Ganji',
+        'Marxergasse 17',
         '1030', 'Wien', NULL,
         NULL, Null);
 

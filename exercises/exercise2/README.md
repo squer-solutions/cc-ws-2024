@@ -67,5 +67,5 @@ Great work! We just created our first topic and produced a message which both it
 
 ## Related Documents
 
-[Confluent CLI](https://docs.confluent.io/confluent-cli/current/overview.html): The Confluent command-line interface (CLI), `confluent`, enables developers to manage both Confluent Cloud and Confluent Platform
-[kCat](https://github.com/edenhill/kcat): A tool to interact with kafka
+* [Confluent CLI](https://docs.confluent.io/confluent-cli/current/overview.html): The Confluent command-line interface (CLI), `confluent`, enables developers to manage both Confluent Cloud and Confluent Platform
+* [kCat](https://github.com/edenhill/kcat): A tool to interact with kafka

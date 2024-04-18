@@ -91,6 +91,6 @@ Perfect, you made your first steps to data streaming and made your first applica
 
 ## Related Documents
 
-[Kafka Stream Documentation](https://kafka.apache.org/documentation/streams/)
-[Streamiz - GitHub](https://github.com/LGouellec/kafka-streams-dotnet): .NET Stream Processing Library for Apache Kafka <sup>TM</sup>
-[Streamiz - Documentation](https://lgouellec.github.io/kafka-streams-dotnet/overview.html#)
+* [Kafka Stream Documentation](https://kafka.apache.org/documentation/streams/)
+* [Streamiz - GitHub](https://github.com/LGouellec/kafka-streams-dotnet): .NET Stream Processing Library for Apache Kafka <sup>TM</sup>
+* [Streamiz - Documentation](https://lgouellec.github.io/kafka-streams-dotnet/overview.html#)

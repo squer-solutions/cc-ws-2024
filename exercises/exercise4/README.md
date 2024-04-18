@@ -136,8 +136,8 @@ and pushes them automatically to a target topic, when **any field** in your reco
 
 ## Related Documents
 
-[Debezium Architecture](https://debezium.io/documentation/reference/stable/architecture.html)
-[Debezium Docker Images](https://hub.docker.com/search?q=debezium%2F)
-[Debezium PostgreSQL CDC Source Connector](https://www.confluent.io/hub/debezium/debezium-connector-postgresql)
-[Debezium Connector for PostgreSQL](https://debezium.io/documentation/reference/stable/connectors/postgresql.html)
-[Debezium Connector PostgreSQL Example Configuration](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-example-configuration)
+* [Debezium Architecture](https://debezium.io/documentation/reference/stable/architecture.html)
+* [Debezium Docker Images](https://hub.docker.com/search?q=debezium%2F)
+* [Debezium PostgreSQL CDC Source Connector](https://www.confluent.io/hub/debezium/debezium-connector-postgresql)
+* [Debezium Connector for PostgreSQL](https://debezium.io/documentation/reference/stable/connectors/postgresql.html)
+* [Debezium Connector PostgreSQL Example Configuration](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-example-configuration)

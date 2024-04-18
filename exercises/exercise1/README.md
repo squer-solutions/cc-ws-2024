@@ -39,4 +39,4 @@ Great work! Now you have a broker running and ready to accept requests!
 
 ## Related Documents:
 
-[Docker Images From Confluent](https://hub.docker.com/search?q=confluentinc%2Fcp)
+* [Docker Images From Confluent](https://hub.docker.com/search?q=confluentinc%2Fcp)

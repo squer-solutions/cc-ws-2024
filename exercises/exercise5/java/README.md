@@ -107,4 +107,4 @@ Perfect, you made your first steps to data streaming and made your first applica
 
 ## Related Documents
 
-[Kafka Stream Documentation](https://kafka.apache.org/documentation/streams/)
+* [Kafka Stream Documentation](https://kafka.apache.org/documentation/streams/)

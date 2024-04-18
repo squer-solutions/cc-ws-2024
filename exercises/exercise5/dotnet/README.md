@@ -11,7 +11,7 @@ dotnet add package Streamiz.Kafka.Net
 
 In the project there is a file `StreamingAppWorker`, it is the background service that will host our code for our data stream.
 
-The first step is to create the configuration and selecting the Serilizer and Deserilizer for the key and value of the stream should work with;
+The first step is to create the configuration and selecting the Serializer and Deserializer for the key and value of the stream should work with;
 since for our example both the key and value are string we will use the following settings: 
 
 ```csharp
@@ -48,7 +48,7 @@ var sourceStream = streamBuilder.Stream(_options.SourceTopic, new StringSerDes()
 
 Now, it is time to build the functionalities for the stream, in this example, we just want to:
 1. Convert the value to upper case
-2. Print it on the Conosle
+2. Print it on the Console
 3. Push it to a destination topic
 
 ```csharp
@@ -91,5 +91,6 @@ Perfect, you made your first steps to data streaming and made your first applica
 
 ## Related Documents
 
+[Kafka Stream Documentation](https://kafka.apache.org/documentation/streams/)
 [Streamiz - GitHub](https://github.com/LGouellec/kafka-streams-dotnet): .NET Stream Processing Library for Apache Kafka <sup>TM</sup>
 [Streamiz - Documentation](https://lgouellec.github.io/kafka-streams-dotnet/overview.html#)

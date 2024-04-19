@@ -141,3 +141,5 @@ and pushes them automatically to a target topic, when **any field** in your reco
 * [Debezium PostgreSQL CDC Source Connector](https://www.confluent.io/hub/debezium/debezium-connector-postgresql)
 * [Debezium Connector for PostgreSQL](https://debezium.io/documentation/reference/stable/connectors/postgresql.html)
 * [Debezium Connector PostgreSQL Example Configuration](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-example-configuration)
+* [PostgreSQL CDC Source (Debezium) Connector for Confluent Cloud](https://docs.confluent.io/cloud/current/connectors/cc-postgresql-cdc-source-v2-debezium/cc-postgresql-cdc-source-v2-debezium.html)
+* [List of Available Connectors](https://docs.confluent.io/cloud/current/connectors/index.html)

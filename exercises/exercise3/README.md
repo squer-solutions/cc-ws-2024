@@ -200,6 +200,7 @@ when the `ts` filed in the database gets updated!
 * [Run Postgres on Docker](https://hub.docker.com/_/postgres)
 * [Kafka Connect](https://docs.confluent.io/platform/current/connect/index.html)
 * [Install Connectors using Confluent Hub](https://docs.confluent.io/platform/current/connect/install.html)
+* [Kafka Connect REST Interface](https://docs.confluent.io/platform/current/connect/references/restapi.html)
 * [Kafka Connectors](https://docs.confluent.io/platform/current/connect/kafka_connectors.html)
 * [JDBC Source & Sink Connector](https://docs.confluent.io/kafka-connectors/jdbc/current/source-connector/overview.html)
 * [Included Transformations in Kafka](https://kafka.apache.org/documentation.html#connect_included_transformation)

@@ -206,3 +206,4 @@ when the `ts` filed in the database gets updated!
 * [Included Transformations in Kafka](https://kafka.apache.org/documentation.html#connect_included_transformation)
 * [Control Center Documentation](https://docs.confluent.io/platform/current/platform-quickstart.html)
 * [Docker Image Configuration Reference for Confluent Platform](https://docs.confluent.io/platform/current/installation/docker/config-reference.html#required-ak-configurations-for-kraft-mode)
+* [Externalize Secrets - Kafka Connect Security](https://docs.confluent.io/platform/current/connect/security.html#externalize-secrets)

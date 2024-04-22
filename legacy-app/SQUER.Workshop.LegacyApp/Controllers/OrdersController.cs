@@ -20,6 +20,11 @@ public class OrdersController : Controller
     public IActionResult GetBuyTickets(string customerId)
     {
         ViewBag.CustomerId = customerId;
+
+        var orderHistory = _dbConnection.Query<Order>("select * from public.orders where customer_id = '" +
+                                                      $"{customerId}'");
+
+        ViewBag.Orders = orderHistory.ToList();
         return View(new Order());
     }
 

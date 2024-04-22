@@ -19,5 +19,37 @@
         <label for="unit_price">UnitPrice</label>
         <input type="text" class="form-control" id="unit_price" name="Unit_price" value="@Model.Unit_price">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    
+    <br />
+    <button type="submit" class="btn btn-primary">Submit New Order</button>
 </form>
+
+<hr/>
+
+<table class="table table-responsive-lg table-striped">
+    <thead>
+    <tr class="table-info text-center">
+        <td colspan="4">
+            Order History
+        </td>
+    </tr>
+    <tr class="table-info">
+        <td>id</td>
+        <td>Quantity</td>
+        <td>Unit Price</td>
+        <td>Total</td>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Order order in ViewBag.Orders)
+    {
+        <tr>
+            <td>@order.Order_id</td>
+
+            <td>@order.Quantity</td>
+            <td>@order.Unit_price</td>
+            <td>@(order.Quantity * order.Unit_price)</td>
+        </tr>
+    }
+    </tbody>
+</table>

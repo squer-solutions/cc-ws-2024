@@ -67,6 +67,20 @@ services:
     networks:
       - kafka_network
   
+  legacy:
+    image: local-image/cc-ws-2024-legacy-app
+    build:
+      context: ../../legacy-app/SQUER.Workshop.LegacyApp
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__Postgres=Server=postgres;Port=5432;User Id=postgres;Password=postgres;Database=squer_db;
+    ports:
+      - "9091:8080"
+    depends_on:
+      - postgresql
+    networks:
+      - kafka_network
+  
   connect:
     image: local-image/cc-ws-2024-kafka-connect-jdbc:latest
     build:

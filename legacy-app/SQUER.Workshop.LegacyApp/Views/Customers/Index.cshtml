@@ -1,0 +1,55 @@
+@model List<SQUER.Workshop.LegacyApp.Models.Customer>
+
+@{
+    ViewBag.Title = "Customers";
+    Layout = "_Layout";
+}
+
+<table class="table table-responsive-lg table-striped">
+    <thead>
+    <tr class="table-info">
+        <td>id</td>
+        <td>ssn</td>
+        <td>email</td>
+        <td>username</td>
+        <td>fullname</td>
+        <td>delivery address</td>
+        <td>billing address</td>
+        <td>
+            actions / 
+            <a class="btn-link btn-outline-success" asp-controller="Customers" asp-action="GetCustomerInfo">
+                New
+            </a>
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var customer in Model)
+    {
+        <tr>
+            <td>@customer.Customer_id</td>
+
+            <td>@customer.Ssn</td>
+            <td>@customer.Email</td>
+            <td>@customer.User_name</td>
+            <td>@customer.Full_name</td>
+            <td>@customer.Delivery_address, @customer.Delivery_zipcode, @customer.Delivery_city</td>
+            <td>
+                @if (!string.IsNullOrWhiteSpace(customer.Billing_address))
+                {
+                    @customer.Billing_address<span>,</span>
+                    @customer.Billing_zipcode<span>,</span>
+                    @customer.Billing_city
+                }
+            </td>
+            <td>
+                <a class="btn btn-primary"
+                   asp-controller="Customers" asp-action="GetCustomerInfo"
+                   asp-route-customerId="@customer.Customer_id">
+                    Edit
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

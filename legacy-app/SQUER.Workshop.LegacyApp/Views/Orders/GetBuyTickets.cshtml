@@ -1,0 +1,23 @@
+@model SQUER.Workshop.LegacyApp.Models.Order
+
+@{
+    ViewBag.Title = "Buy Ticket";
+    Layout = "_Layout";
+}
+
+<form method="post" asp-controller="Orders"
+      asp-action="BuyTickets" asp-route-customerId="@ViewBag.CustomerId">
+    <div class="form-group">
+        <label for="customer_id">Customer ID:</label>
+        <input type="text" class="form-control" id="customer_id" name="Customer_id" value="@ViewBag.CustomerId" readonly>
+    </div>
+    <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input type="text" class="form-control" id="quantity" name="Quantity" value="@Model.Quantity">
+    </div>
+    <div class="form-group">
+        <label for="unit_price">UnitPrice</label>
+        <input type="text" class="form-control" id="unit_price" name="Unit_price" value="@Model.Unit_price">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

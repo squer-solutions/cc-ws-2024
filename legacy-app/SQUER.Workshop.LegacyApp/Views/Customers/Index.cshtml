@@ -16,7 +16,8 @@
         <td>delivery address</td>
         <td>billing address</td>
         <td>
-            actions / 
+            actions
+            |
             <a class="btn-link btn-outline-success" asp-controller="Customers" asp-action="GetCustomerInfo">
                 New
             </a>
@@ -47,6 +48,12 @@
                    asp-controller="Customers" asp-action="GetCustomerInfo"
                    asp-route-customerId="@customer.Customer_id">
                     Edit
+                </a>
+                |
+                <a class="btn-link btn-outline-success"
+                   asp-controller="Orders" asp-action="GetBuyTickets"
+                   asp-route-customerId="@customer.Customer_id">
+                    Order
                 </a>
             </td>
         </tr>

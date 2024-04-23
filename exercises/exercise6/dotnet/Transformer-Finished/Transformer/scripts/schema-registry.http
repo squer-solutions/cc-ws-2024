@@ -1,0 +1,14 @@
+### List all subjects
+GET http://localhost:8081/subjects
+
+### List all versions of a specific subject
+GET http://localhost:8081/subjects/cdc.public.customers-value/versions
+
+### Get the schema of a specific subject for a particular version
+GET http://localhost:8081/subjects/cdc.public.customers-value/versions/1 
+
+### GET the schema by its id - Customer Schema
+GET http://localhost:8081/schemas/ids/2
+
+### Get the schema by its id - Key Schema
+GET http://localhost:8081/schemas/ids/1

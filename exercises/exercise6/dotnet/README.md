@@ -95,9 +95,28 @@ we are now ready to implement the stream topology:
 2. Change the old key (`customer_id`) to a new key `username`
 3. publish to the destination topic `customer-transformed-topic`
 
+<details>
 
-```bash
+<summary>After generating the cdc representative C# classes, use the following for the stream topology</summary>
+
+```csharp
+cdcStream.MapValues(envelope => Customer.Create(
+                Guid.Parse(envelope.after.customer_id), envelope.after.user_name,
+                envelope.after.full_name,
+                envelope.after.email,
+                new Address(envelope.after.delivery_address, envelope.after.delivery_zipcode,
+                    envelope.after.delivery_city),
+                string.IsNullOrEmpty(envelope.after.billing_address)
+                    ? null
+                    : new Address(envelope.after.billing_address, envelope.after.billing_zipcode,
+                        envelope.after.billing_city)
+            ))
+            .Map((_, v) => KeyValuePair.Create(v!.Username, v))
+            .To<StringSerDes, SchemaAvroSerDes<Customer>>(kafkaConfig.TransformerTopic,
+                named: "Transformer Export");
 ```
+
+</details>
 
 
 ```

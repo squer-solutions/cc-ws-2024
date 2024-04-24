@@ -62,9 +62,13 @@ and those classes should implement the `ISpecificRecord` interface. We could do 
 
 <details>
 
-<summary>Generate Schema from `C#` classes</summary>
 
-To generate schemas from `C#` classes, you need another dotnet tool,
+<summary>
+
+It is always better to create the schema files by hand and then generate the events from this contract,
+however, to generate schema from `C#` classes, you need another dotnet tool. 
+
+</summary>
 
 ```bash
 dotnet tool install --global Chr.Avro.Cli --version 10.2.4
@@ -78,14 +82,14 @@ dotnet avro create --type Transformer.Models.Customer --assembly dotnet/Transfor
 
 **PS:** Bear in mind, since the command is using an assembly, make sure you have run the build on the project before running the previous command 
 
+</details>
+
+The schema for the new contracts is already located at the `exercise6/dotnet/Transformer/Transformer/avdl/`; also a generated code is located in the
+`exercise6/dotnet/Transformer/Transformer/Models/Generated`, but if you want to try it for yourself run the following:  
 
 ```bash
-avrogen -s ./dotnet/Transformer/Transformer/avdl/Customer-Transformer.avsc ./dotnet/Transformer/Transformer/TemporaryGeneratedCode/ --skip-directories
+avrogen -s ./dotnet/Transformer/Transformer/avdl/Customer-Transformer.avsc ./dotnet/Transformer/Transformer/Models/Generated --skip-directories
 ```
-
-You could now regenerate the C# classes and copy the missing ones to your actual class.
-
-</details>
 
 The schema and the classes are already added to the project for the sake of time! 
 
@@ -133,3 +137,5 @@ dotnet avro create --type Transformer.Models.Customer --assembly dotnet/Transfor
 * [Avro Specific .NET Example](https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/examples/AvroSpecific/README.md)
 * [Avro Generic .NET Example](https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/examples/AvroGeneric/Program.cs)
 * [Decoupling Systems with Apache Kafka, Schema Registry and Avro](https://www.confluent.io/blog/decoupling-systems-with-apache-kafka-schema-registry-and-avro/)
+* [KafkaFlow Documentation](https://farfetch.github.io/kafkaflow/docs/)
+* [Introduction to KafkaFlow](https://guiferreira.me/archive/2023/a-better-way-to-kafka-event-driven-applications-with-csharp/)

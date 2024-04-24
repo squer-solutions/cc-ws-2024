@@ -19,4 +19,8 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\Generated\" />
+    </ItemGroup>
 </Project>

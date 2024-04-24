@@ -1,12 +1,8 @@
 {
-  "name": "Transformer.Models.Customer",
-  "type": "record",
   "fields": [
     {
       "name": "DefaultBillingAddress",
       "type": {
-        "name": "Transformer.Models.Address",
-        "type": "record",
         "fields": [
           {
             "name": "City",
@@ -20,12 +16,14 @@
             "name": "Zipcode",
             "type": "string"
           }
-        ]
+        ],
+        "name": "Address",
+        "type": "record"
       }
     },
     {
       "name": "DefaultDeliveryAddress",
-      "type": "Transformer.Models.Address"
+      "type": "Address"
     },
     {
       "name": "Email",
@@ -38,8 +36,8 @@
     {
       "name": "Id",
       "type": {
-        "type": "string",
-        "logicalType": "uuid"
+        "logicalType": "uuid",
+        "type": "string"
       }
     },
     {
@@ -50,5 +48,8 @@
       "name": "Username",
       "type": "string"
     }
-  ]
+  ],
+  "name": "Customer",
+  "namespace": "Transformer.Models",
+  "type": "record"
 }

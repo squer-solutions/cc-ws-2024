@@ -1,0 +1,25 @@
+@page "/customers"
+
+<h3>Customers</h3>
+
+<table class="table table-striped table-responsive table-responsive-sm table-responsive-md table-borderless table-hover">
+    <thead>
+    <tr class="table-info">
+        <td>Username</td>
+        <td>First Name</td>
+        <td>Last Name</td>
+        <td>Email</td>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var customer in CustomersDto)
+    {
+        <tr>
+            <td>@customer.Username</td>
+            <td>@customer.FirstName</td>
+            <td>@customer.LastName</td>
+            <td>@customer.Email</td>
+        </tr>
+    }
+    </tbody>
+</table>

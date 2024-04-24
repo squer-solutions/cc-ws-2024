@@ -31,12 +31,12 @@ builder.Services.AddSingleton<IMongoCollection<CustomerDbModel>>(sp =>
 {
     var settings = sp.GetRequiredService<IOptionsMonitor<DatabaseSettings>>().CurrentValue;
     var mongoClient = sp.GetRequiredService<MongoClient>();
-    
+
     var mongoDatabase = mongoClient.GetDatabase(settings.DatabaseName);
 
     return mongoDatabase.GetCollection<CustomerDbModel>(settings.CustomersCollectionName);
 });
-    
+
 builder.Services.AddSingleton<IFetchCustomer, CustomerRepository>();
 builder.Services.AddSingleton<ISaveCustomer, CustomerRepository>();
 builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
@@ -47,15 +47,25 @@ builder.Services.AddResponseCompression(opts =>
 });
 builder.Services.AddSignalR();
 
+KafkaSettings kafkaSettings = new();
+builder.Configuration.GetRequiredSection(KafkaSettings.Section).Bind(kafkaSettings);
+
+Console.WriteLine("--------------------------------");
+Console.WriteLine(kafkaSettings.Brokers.First());
+Console.WriteLine(kafkaSettings.GroupId);
+Console.WriteLine(kafkaSettings.SchemaRegistryUrl);
+Console.WriteLine(kafkaSettings.TransformerTopic);
+Console.WriteLine("--------------------------------");
+
 builder.Services.AddKafkaFlowHostedService(kafka => kafka
     .UseMicrosoftLog()
     .UseConsoleLog()
     .AddCluster(cluster => cluster
-        .WithBrokers(["localhost:9092"])
-        .WithSchemaRegistry(config => config.Url = "localhost:8081")
+        .WithBrokers(kafkaSettings.Brokers)
+        .WithSchemaRegistry(config => config.Url = kafkaSettings.SchemaRegistryUrl)
         .AddConsumer(consumer => consumer
-            .Topic("customer-transformed-topic")
-            .WithGroupId("management-backend")
+            .Topic(kafkaSettings.TransformerTopic)
+            .WithGroupId(kafkaSettings.GroupId)
             .WithBufferSize(100)
             .WithWorkersCount(1)
             .WithAutoOffsetReset(AutoOffsetReset.Earliest)
@@ -105,49 +115,3 @@ app.MapGet("api/customers", async (IFetchCustomer repository, CancellationToken 
 // if the requested route does not exists, then route it to the index.html file
 app.MapFallbackToFile("index.html");
 app.Run();
-
-//
-// public class MyHostedService : BackgroundService
-// {
-//     protected override Task ExecuteAsync(CancellationToken stoppingToken)
-//     {
-//         const string bootstrapServer = "localhost:9092";
-//         const string schemaRegistry = "localhost:8081";
-//         const string topic = "customer-transformed-topic";
-//
-//         var schemaRegistryConfig = new SchemaRegistryConfig()
-//         {
-//             Url = schemaRegistry
-//         };
-//
-//         var consumerConfig = new ConsumerConfig()
-//         {
-//             BootstrapServers = bootstrapServer, GroupId = "my-background-service-7",
-//             AutoOffsetReset = Confluent.Kafka.AutoOffsetReset.Earliest
-//         };
-//         
-//         using var schemaRegistryClient = new CachedSchemaRegistryClient(schemaRegistryConfig);
-//         using var consumer = new ConsumerBuilder<string, Customer>(consumerConfig)
-//             .SetValueDeserializer(new AvroDeserializer<Customer>(schemaRegistryClient).AsSyncOverAsync())
-//             .SetErrorHandler((_, e) => Console.WriteLine(e.Reason))
-//             .Build();
-//
-//         consumer.Subscribe(topic);
-//
-//         while (!stoppingToken.IsCancellationRequested)
-//         {
-//             try
-//             {
-//                 var consumerResult = consumer.Consume(stoppingToken);
-//                 var customer = consumerResult.Message.Value;
-//                 Console.WriteLine(customer.Username);
-//             }
-//             catch (ConsumeException e)
-//             {
-//                 Console.WriteLine(e);
-//             }
-//         }
-//
-//         return Task.CompletedTask;
-//     }
-//}

@@ -8,6 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["CustomerManagement.Backend/CustomerManagement.Backend.csproj", "CustomerManagement.Backend/"]
+COPY ["WorkshopManagement.App/WorkshopManagement.App.csproj", "WorkshopManagement.App/"]
 RUN dotnet restore "CustomerManagement.Backend/CustomerManagement.Backend.csproj"
 COPY . .
 WORKDIR "/src/CustomerManagement.Backend"

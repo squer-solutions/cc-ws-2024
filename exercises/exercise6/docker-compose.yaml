@@ -158,3 +158,26 @@ services:
       - "27017:27017"
     networks:
       - kafka_network
+
+  workshop-management:
+    image: local-image/cc-ws-2024-workshop-management
+    build:
+      context: ./microservice/WorkshopManagement
+      dockerfile: CustomerManagement.Backend/Dockerfile
+    environment:
+      - DatabaseSettings__ConnectionString=mongodb://mongodb:27017
+      - DatabaseSettings__DatabaseName=WorkshopManagement
+      - DatabaseSettings__CustomersCollectionName=Customers
+      - Kafka__Brokers__0=broker:29092
+      - Kafka__SchemaRegistryUrl=schema-registry:8081
+      - Kafka__GroupId=management-backend
+      - Kafka__TransformerTopic=customer-transformed-topic
+    ports:
+      - "9090:8080"
+    depends_on:
+      - mongodb
+      - broker
+      - connect
+      - schema-registry
+    networks:
+      - kafka_network

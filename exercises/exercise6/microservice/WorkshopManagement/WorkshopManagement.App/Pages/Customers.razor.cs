@@ -27,6 +27,10 @@ public partial class Customers : ComponentBase
         _hubConnection.On<CustomerDto>("CustomerTransformed", dto =>
         {
             Console.WriteLine(dto);
+            var customer = CustomersDto.FirstOrDefault(x => x.Email == dto.Email);
+            if(customer is not null)
+                CustomersDto.Remove(customer);
+            
             CustomersDto.Add(dto);
             InvokeAsync(StateHasChanged);
         });

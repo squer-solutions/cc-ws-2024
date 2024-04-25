@@ -35,7 +35,7 @@ workshopManagement = softwareSystem "The new Workshop Management System" {
     transformer = container "transaformer" {
         description "The transformer application, converts cdc events to Customer"
         technology "kafka stream"
-        tags "java" "team-ws"
+        tags "kafka-stream" "team-ws"
     }
 
     customerTransformedTopic = container "customer-transformed" {

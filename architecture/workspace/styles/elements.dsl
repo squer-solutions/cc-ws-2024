@@ -36,6 +36,12 @@ element "debezium" {
 }
 
 
+element "kafka-stream" {
+    shape Hexagon
+    fontSize 16
+    icon ../assets/river.png
+}
+
 element "dotnet" {
     shape Hexagon
     fontSize 16

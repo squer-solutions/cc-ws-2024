@@ -12,6 +12,18 @@ workshopManagement = softwareSystem "The new Workshop Management System" {
         description "This the new API for managing customer data"
         technology ".NET"
         tags "csharp" "WebApi" "team-ws"
+
+        customerTransformedHandler = component "Customer Transformed Handler" {
+            description "Subscribes to the customer-transformed-topic and saves changes to the database"
+            technology ".NET"
+            tags "csharp" "team-ws"
+        }
+
+        getCustomerEndpoint = component "Get" {
+            description "Returns all customers"
+            technology ".NET"
+            tags "csharp" "team-ws"
+        }
     }
 
     webApp = container "Blazor Web Application" {
@@ -32,7 +44,7 @@ workshopManagement = softwareSystem "The new Workshop Management System" {
         tags "kafka" "team-ws"
     }
 
-    transformer = container "transaformer" {
+    transformer = container "transformer stream" {
         description "The transformer application, converts cdc events to Customer"
         technology "kafka stream"
         tags "java" "team-ws"
@@ -44,20 +56,11 @@ workshopManagement = softwareSystem "The new Workshop Management System" {
         tags "kafka" "team-ws"
     }
 
-    customerTransformedSubscriber = container "Sync-Saver" {
-        description "Subscribes to the customer-transformed-topic and saves changes to the database" 
-        technology ".NET"
-        tags "csharp" "team-ws"
-    }
-
     webApi -> database "reads data from"
-    webApp -> webApi "fetches customer data" {
-        tags "sync"
+    webApp -> webApi.getCustomerEndpoint "fetches customer data" {
+        tags "sync" "http"
     }
-    webApi -> webApp "pushes customer data - websocket" {
-        tags "async"
-    }
-
+    
     transformer -> cdcCustomerTopic "streams data"{
         tags async
     }
@@ -66,9 +69,11 @@ workshopManagement = softwareSystem "The new Workshop Management System" {
         tags async
     }
 
-    customerTransformedSubscriber -> customerTransformedTopic "subscribed"{
+    webApi.customerTransformedHandler -> customerTransformedTopic "subscribed"{
         tags async
     }
-
-    customerTransformedSubscriber -> database "saves arriving data"
+    webApi.customerTransformedHandler -> database "saves arriving data"
+    webApi.customerTransformedHandler -> webApp "pushes customer data - websocket" {
+        tags "async"
+    }
 }

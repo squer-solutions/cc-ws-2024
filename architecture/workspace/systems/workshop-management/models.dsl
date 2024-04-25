@@ -16,13 +16,13 @@ workshopManagement = softwareSystem "The new Workshop Management System" {
         customerTransformedHandler = component "Customer Transformed Handler" {
             description "Subscribes to the customer-transformed-topic and saves changes to the database"
             technology ".NET"
-            tags "csharp" "team-ws"
+            tags "team-ws"
         }
 
         getCustomerEndpoint = component "Get" {
             description "Returns all customers"
             technology ".NET"
-            tags "csharp" "team-ws"
+            tags "endpoint" "team-ws"
         }
     }
 

@@ -9,6 +9,12 @@ element Container {
     color #ffffff
 }
 
+element Component {
+    shape Box
+    background #438dd5
+    color #ffffff
+}
+
 element "Service" {
     shape Hexagon
     fontSize 16
@@ -33,11 +39,6 @@ element "WebApp" {
 
 element "MobileApp" {
     shape MobileDevicePortrait
-}
-
-element Component {
-    shape Component
-    fontSize 16
 }
 
 element "Group" {

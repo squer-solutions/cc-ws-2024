@@ -42,6 +42,10 @@ element "kafka-stream" {
     icon ../assets/river.png
 }
 
+element "endpoint" {
+    shape Component
+}
+
 element "dotnet" {
     shape Hexagon
     fontSize 16

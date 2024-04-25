@@ -44,4 +44,6 @@ Content-Type: application/json
 
 ```
 
+**PS:** To see the architecture of the system navigate to http://localhost:7070
+
 **PS:** For framework dependent materials check out the [java](./java/README.md) and [dotnet](./dotnet/README.md) subfolders. 

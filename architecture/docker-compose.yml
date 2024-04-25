@@ -1,0 +1,8 @@
+
+services:
+  structurizr:
+    image: structurizr/lite:latest
+    ports:
+      - 7070:8080
+    volumes:
+      - "./workspace:/usr/local/structurizr"

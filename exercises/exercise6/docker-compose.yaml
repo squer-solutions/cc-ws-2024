@@ -181,3 +181,10 @@ services:
       - schema-registry
     networks:
       - kafka_network
+
+  structurizr:
+    image: structurizr/lite:latest
+    ports:
+      - 7070:8080
+    volumes:
+      - "../../architecture/workspace:/usr/local/structurizr"

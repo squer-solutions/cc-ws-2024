@@ -37,46 +37,9 @@ public class TransformerService {
                 properties.getProperty(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG).toString(),
                 AbstractKafkaAvroSerDeConfig.MAX_SCHEMAS_PER_SUBJECT_DEFAULT);
 
-        KStream<Key, Envelope> sourceStream = builder.stream(CDC_TOPIC);
+        KStream<Key, Envelope> cdcStream = builder.stream(CDC_TOPIC);
 
-        sourceStream
-                .mapValues(envelope -> {
-                            Address deliveryAddress = Address.newBuilder()
-                                    .setLien1(envelope.getAfter().getDeliveryAddress())
-                                    .setZipcode(envelope.getAfter().getDeliveryZipcode())
-                                    .setCity(envelope.getAfter().getDeliveryCity())
-                                    .build();
-
-                            Address billingAddress = envelope.getAfter().getBillingAddress() == null
-                                    ? Address.newBuilder()
-                                    .setLien1(envelope.getAfter().getDeliveryAddress())
-                                    .setZipcode(envelope.getAfter().getDeliveryZipcode())
-                                    .setCity(envelope.getAfter().getDeliveryCity())
-                                    .build()
-                                    : Address.newBuilder()
-                                    .setLien1(envelope.getAfter().getBillingAddress())
-                                    .setZipcode(envelope.getAfter().getBillingZipcode())
-                                    .setCity(envelope.getAfter().getBillingCity())
-                                    .build();
-
-                            String[] names = envelope.getAfter().getFullName().toString().split(" ");
-                            String firstName = names[0];
-                            String lastName = names.length > 1 ? names[1] : names[0];
-
-                            return Customer.newBuilder()
-                                    .setId(UUID.fromString(envelope.getAfter().getCustomerId().toString()))
-                                    .setUsername(envelope.getAfter().getUserName())
-                                    .setFirstName(firstName)
-                                    .setLastName(lastName)
-                                    .setEmail(envelope.getAfter().getEmail())
-                                    .setDefaultDeliveryAddress(deliveryAddress)
-                                    .setDefaultBillingAddress(billingAddress)
-                                    .build();
-                        }
-
-                )
-                .map((k, v) -> KeyValue.pair(v.getUsername().toString(), v))
-                .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), new SpecificAvroSerde<>(schemaRegistryClient)));
+        // TODO: implement the stream topology
 
         Topology topology = builder.build();
 

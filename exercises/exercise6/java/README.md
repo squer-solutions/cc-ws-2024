@@ -3,7 +3,7 @@
 After bringing up your environment the first thing you need is to download the schema files for the events published by
 `Debezium` connector.
 
-The following command lists all the registered schemas:
+## Retrieving the schema files
 
 ```http request
 GET http://localhost:8081/subjects
@@ -25,19 +25,16 @@ schema:
 GET http://localhost:8081/schemas/ids/1
 ```
 
-After that, you need to download the [avro-tools] jar file and copy it in the root folder of the `transformer` project,
+### Via Confluent Control Center
+* The quickest way to retrieve the current schema for a topic is by downloading it from the control center
+* Open the [ControlCenter](http://localhost:9021/), open the Topics section and find the CDC topic
+* Open the tab "Schema", and in the context menu (...), you can download both the key-schema and the value-schema
+* Place the schemas in the `src/main/resources/avro` folder
 
-then run the following commands from `terminal`, to generate `java` classes for each specific schema:
+## Maven Plugin Code Generation
+* The project is set up to generate the required Java-classes from the downloaded avro schemas
+    * It is highly recommended to inspect the `pom.xml` in detail to understand which steps are performed
 
-```bash
-java -jar ./java/transformer/avro-tools-1.11.3.jar compile schema ./java/transformer/src/main/resources/avro/cdc-customers-v1.avsc ./java/transformer/src/main/java
-```
-```bash
-java -jar ./java/transformer/avro-tools-1.11.3.jar compile schema ./java/transformer/src/main/resources/avro/cdc-customers-key-v1.avsc ./java/transformer/src/main/java
-```
-```bash
-java -jar ./java/transformer/avro-tools-1.11.3.jar compile schema ./java/transformer/src/main/resources/avro/Customer-Transformer.avsc ./java/transformer/src/main/java
-```
 
 Before starting the application we also need to register the new `Customer-Transformed-Topic` schema for the `customer-transformed-topic`, 
 go to the [Control Center](http://localhost:9021/), click on the **cluster card**, choose `Topics` from the left menu
@@ -66,44 +63,73 @@ we are now ready to implement the stream topology:
 <summary>After completing the previous steps you could use the following for the stream topology</summary>
 
 ```java
-cdcStream
-    .mapValues(envelope -> {
-                Address deliveryAddress = Address.newBuilder()
-                        .setLien1(envelope.getAfter().getDeliveryAddress())
-                        .setZipcode(envelope.getAfter().getDeliveryZipcode())
-                        .setCity(envelope.getAfter().getDeliveryCity())
-                        .build();
+public void run() {
 
-                Address billingAddress = envelope.getAfter().getBillingAddress() == null
-                        ? Address.newBuilder()
-                        .setLien1(envelope.getAfter().getDeliveryAddress())
-                        .setZipcode(envelope.getAfter().getDeliveryZipcode())
-                        .setCity(envelope.getAfter().getDeliveryCity())
-                        .build()
-                        : Address.newBuilder()
-                        .setLien1(envelope.getAfter().getBillingAddress())
-                        .setZipcode(envelope.getAfter().getBillingZipcode())
-                        .setCity(envelope.getAfter().getBillingCity())
-                        .build();
+        final StreamsBuilder builder = new StreamsBuilder();
 
-                String[] names = envelope.getAfter().getFullName().toString().split(" ");
-                String firstName = names[0];
-                String lastName = names.length > 1 ? names[1] : names[0];
+        CachedSchemaRegistryClient schemaRegistryClient = new CachedSchemaRegistryClient(
+                properties.getProperty(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG).toString(),
+                AbstractKafkaAvroSerDeConfig.MAX_SCHEMAS_PER_SUBJECT_DEFAULT);
 
-                return Customer.newBuilder()
-                        .setId(UUID.fromString(envelope.getAfter().getCustomerId().toString()))
-                        .setUsername(envelope.getAfter().getUserName())
-                        .setFirstName(firstName)
-                        .setLastName(lastName)
-                        .setEmail(envelope.getAfter().getEmail())
-                        .setDefaultDeliveryAddress(deliveryAddress)
-                        .setDefaultBillingAddress(billingAddress)
-                        .build();
-            }
+        KStream<Key, Envelope> sourceStream = builder.stream(CDC_TOPIC);
 
-    )
-    .map((k, v) -> KeyValue.pair(v.getUsername().toString(), v))
-    .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), new SpecificAvroSerde<>(schemaRegistryClient)));
+        sourceStream.peek((key, value) -> {
+            System.out.println("Key: " + key);
+            System.out.println("Value before: " + value.getBefore());
+            System.out.println("Value after: " + value.getAfter());
+        });
+
+        sourceStream
+                .mapValues(TransformerService::mapCustomer)
+                .map((k, v) -> KeyValue.pair(v.getUsername().toString(), v))
+                .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), new SpecificAvroSerde<>(schemaRegistryClient)));
+
+        Topology topology = builder.build();
+
+        KafkaStreams streams = new KafkaStreams(topology, properties);
+
+        // attach shutdown handler to catch control-c
+        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+
+        streams.start();
+    }
+
+    private static Customer mapCustomer(Envelope envelope) {
+
+        Value envelopeAfter = envelope.getAfter();
+
+        Address deliveryAddress = Address.newBuilder()
+                .setLien1(envelopeAfter.getDeliveryAddress())
+                .setZipcode(envelopeAfter.getDeliveryZipcode())
+                .setCity(envelopeAfter.getDeliveryCity())
+                .build();
+
+        Address billingAddress = envelopeAfter.getBillingAddress() == null
+                ? Address.newBuilder()
+                .setLien1(envelopeAfter.getDeliveryAddress())
+                .setZipcode(envelopeAfter.getDeliveryZipcode())
+                .setCity(envelopeAfter.getDeliveryCity())
+                .build()
+                : Address.newBuilder()
+                .setLien1(envelopeAfter.getBillingAddress())
+                .setZipcode(envelopeAfter.getBillingZipcode())
+                .setCity(envelopeAfter.getBillingCity())
+                .build();
+
+        String[] names = envelopeAfter.getFullName().toString().split(" ");
+        String firstName = names[0];
+        String lastName = names.length > 1 ? names[1] : names[0];
+
+        return Customer.newBuilder()
+                .setId(UUID.fromString(envelopeAfter.getCustomerId().toString()))
+                .setUsername(envelopeAfter.getUserName())
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmail(envelopeAfter.getEmail())
+                .setDefaultDeliveryAddress(deliveryAddress)
+                .setDefaultBillingAddress(billingAddress)
+                .build();
+    }
 
 ```
 </details>

@@ -4,6 +4,7 @@ import Transformer.Models.Address;
 import Transformer.Models.Customer;
 import cdc.public$.customers.Envelope;
 import cdc.public$.customers.Key;
+import cdc.public$.customers.Value;
 import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
@@ -15,6 +16,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
+
 
 import java.util.Properties;
 import java.util.UUID;
@@ -29,7 +31,7 @@ public class TransformerService {
         properties = props;
     }
 
-    public void Run() {
+    public void run() {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
@@ -39,42 +41,14 @@ public class TransformerService {
 
         KStream<Key, Envelope> sourceStream = builder.stream(CDC_TOPIC);
 
+        sourceStream.peek((key, value) -> {
+            System.out.println("Key: " + key);
+            System.out.println("Value before: " + value.getBefore());
+            System.out.println("Value after: " + value.getAfter());
+        });
+
         sourceStream
-                .mapValues(envelope -> {
-                            Address deliveryAddress = Address.newBuilder()
-                                    .setLien1(envelope.getAfter().getDeliveryAddress())
-                                    .setZipcode(envelope.getAfter().getDeliveryZipcode())
-                                    .setCity(envelope.getAfter().getDeliveryCity())
-                                    .build();
-
-                            Address billingAddress = envelope.getAfter().getBillingAddress() == null
-                                    ? Address.newBuilder()
-                                    .setLien1(envelope.getAfter().getDeliveryAddress())
-                                    .setZipcode(envelope.getAfter().getDeliveryZipcode())
-                                    .setCity(envelope.getAfter().getDeliveryCity())
-                                    .build()
-                                    : Address.newBuilder()
-                                    .setLien1(envelope.getAfter().getBillingAddress())
-                                    .setZipcode(envelope.getAfter().getBillingZipcode())
-                                    .setCity(envelope.getAfter().getBillingCity())
-                                    .build();
-
-                            String[] names = envelope.getAfter().getFullName().toString().split(" ");
-                            String firstName = names[0];
-                            String lastName = names.length > 1 ? names[1] : names[0];
-
-                            return Customer.newBuilder()
-                                    .setId(UUID.fromString(envelope.getAfter().getCustomerId().toString()))
-                                    .setUsername(envelope.getAfter().getUserName())
-                                    .setFirstName(firstName)
-                                    .setLastName(lastName)
-                                    .setEmail(envelope.getAfter().getEmail())
-                                    .setDefaultDeliveryAddress(deliveryAddress)
-                                    .setDefaultBillingAddress(billingAddress)
-                                    .build();
-                        }
-
-                )
+                .mapValues(TransformerService::mapCustomer)
                 .map((k, v) -> KeyValue.pair(v.getUsername().toString(), v))
                 .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), new SpecificAvroSerde<>(schemaRegistryClient)));
 
@@ -86,5 +60,42 @@ public class TransformerService {
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
 
         streams.start();
+    }
+
+    private static Customer mapCustomer(Envelope envelope) {
+
+        Value envelopeAfter = envelope.getAfter();
+
+        Address deliveryAddress = Address.newBuilder()
+                .setLien1(envelopeAfter.getDeliveryAddress())
+                .setZipcode(envelopeAfter.getDeliveryZipcode())
+                .setCity(envelopeAfter.getDeliveryCity())
+                .build();
+
+        Address billingAddress = envelopeAfter.getBillingAddress() == null
+                ? Address.newBuilder()
+                .setLien1(envelopeAfter.getDeliveryAddress())
+                .setZipcode(envelopeAfter.getDeliveryZipcode())
+                .setCity(envelopeAfter.getDeliveryCity())
+                .build()
+                : Address.newBuilder()
+                .setLien1(envelopeAfter.getBillingAddress())
+                .setZipcode(envelopeAfter.getBillingZipcode())
+                .setCity(envelopeAfter.getBillingCity())
+                .build();
+
+        String[] names = envelopeAfter.getFullName().toString().split(" ");
+        String firstName = names[0];
+        String lastName = names.length > 1 ? names[1] : names[0];
+
+        return Customer.newBuilder()
+                .setId(UUID.fromString(envelopeAfter.getCustomerId().toString()))
+                .setUsername(envelopeAfter.getUserName())
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmail(envelopeAfter.getEmail())
+                .setDefaultDeliveryAddress(deliveryAddress)
+                .setDefaultBillingAddress(billingAddress)
+                .build();
     }
 }

@@ -41,8 +41,32 @@ Content-Type: application/json
   "value.converter": "io.confluent.connect.avro.AvroConverter",
   "value.converter.schema.registry.url": "http://schema-registry:8081"  
 }
-
 ```
+```bash
+curl -X PUT \
+  localhost:8083/connectors/debezium_source_connector_customers/config \
+  -H 'Content-Type: application/json' \
+  -v \
+  -d '{
+  "tasks.max": "1",
+  "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+  "database.hostname": "postgres",
+  "database.port": "5432",
+  "database.user": "postgres",
+  "database.password": "postgres",
+  "database.dbname": "squer_db",
+  
+  "snapshot.mode": "initial",
+  
+  "table.include.list": "public.customers", 
+  "topic.prefix": "cdc",
+  "key.converter": "io.confluent.connect.avro.AvroConverter",
+  "key.converter.schema.registry.url": "http://schema-registry:8081",
+  "value.converter.schemas.enable": "false",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schema.registry.url": "http://schema-registry:8081"  
+}'
+
 
 **PS:** To see the architecture of the system navigate to http://localhost:7070
 

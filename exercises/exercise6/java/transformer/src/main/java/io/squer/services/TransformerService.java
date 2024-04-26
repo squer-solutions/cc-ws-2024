@@ -29,17 +29,22 @@ public class TransformerService {
         properties = props;
     }
 
-    public void Run() {
+    public void run() {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
-        CachedSchemaRegistryClient schemaRegistryClient = new CachedSchemaRegistryClient(
-                properties.getProperty(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG).toString(),
-                AbstractKafkaAvroSerDeConfig.MAX_SCHEMAS_PER_SUBJECT_DEFAULT);
+        /*
+         * To consume the stream, you will need something along the lines of:
+         *  KStream<cdc.public$.customers.Key, cdc.public$.customers.Envelope> sourceStream = builder.stream(
+         *         CDC_TOPIC);
+         *  sourceStream.peek((key, value) -> {
+         *       System.out.println("Key: " + key);
+         *       System.out.println("Value before: " + value.getBefore());
+         *       System.out.println("Value after: " + value.getAfter());
+         *     });
+         * TODO: implement the stream topology
+         */
 
-        KStream<Key, Envelope> cdcStream = builder.stream(CDC_TOPIC);
-
-        // TODO: implement the stream topology
 
         Topology topology = builder.build();
 

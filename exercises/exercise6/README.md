@@ -66,6 +66,12 @@ curl -X PUT \
   "value.converter": "io.confluent.connect.avro.AvroConverter",
   "value.converter.schema.registry.url": "http://schema-registry:8081"  
 }'
+```
+
+# Next steps
+For further instructions, please refer to the README in the dotnet or java folder:
+* .NET: [README](dotnet/README.md)
+* Java: [README](java/README.md)
 
 
 **PS:** To see the architecture of the system navigate to http://localhost:7070

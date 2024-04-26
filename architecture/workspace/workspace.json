@@ -2,63 +2,14 @@
   "id" : 1,
   "name" : "Name",
   "description" : "Description",
-  "lastModifiedDate" : "2024-04-25T15:48:11Z",
+  "lastModifiedDate" : "2024-04-26T10:10:31Z",
+  "lastModifiedAgent" : "structurizr-javascript",
   "properties" : {
     "structurizr.dsl" : "d29ya3NwYWNlIHsKCiAgICAhYWRycyBkZWNpc2lvbnMKICAgICFpZGVudGlmaWVycyBoaWVyYXJjaGljYWwKCiAgICBtb2RlbCB7CiAgICAgICAgcHJvcGVydGllcyB7CiAgICAgICAgICAgICJzdHJ1Y3R1cml6ci5ncm91cFNlcGFyYXRvciIgIi8iCiAgICAgICAgfQoKICAgICAgICBsZWdhY3lTeXN0ZW0gPSBzb2Z0d2FyZVN5c3RlbSAiVGhlIGxlZ2FjeSBzb2Z0d2FyZSBzeXN0ZW0iIHsKICAgICAgICAKICAgICAgICAgICAgdGFncyAidGVhbS1sZWdhY3kiCiAgICAgICAgICAgIAogICAgICAgIAogICAgICAgICAgICBkYXRhYmFzZSA9IGNvbnRhaW5lciAiTGVnYWN5IiB7CiAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiSG9sZHMgdGhlIGxlZ2FjeSBkYXRhLCBhIHJlbGF0aW9uYWwgZGF0YWJhc2UiCiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJwb3N0Z3JlcyIKICAgICAgICAgICAgICAgIHRhZ3MgInBvc3RncmVzIiAidGVhbS1sZWdhY3kiCiAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgd2ViQXBwID0gY29udGFpbmVyICJNVkMgV2ViIEFwcCIgewogICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoaXMgaXMgdGhlIG9sZCBtb25vbGl0aGljIGFwcGxpY2F0aW9uIgogICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiLk5FVCIKICAgICAgICAgICAgICAgIHRhZ3MgImNzaGFycCIgIldlYkFwcCIgInRlYW0tbGVnYWN5IgogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICB3ZWJBcHAgLT4gZGF0YWJhc2UgIlJlYWRzL3dyaXRlcyBkYXRhIGZyb20vdG8iCiAgICAgICAgfQogICAgICAgIHdvcmtzaG9wTWFuYWdlbWVudCA9IHNvZnR3YXJlU3lzdGVtICJUaGUgbmV3IFdvcmtzaG9wIE1hbmFnZW1lbnQgU3lzdGVtIiB7CiAgICAgICAgCiAgICAgICAgICAgIHRhZ3MgInRlYW0td3MiCiAgICAgICAgCiAgICAgICAgICAgIGRhdGFiYXNlID0gY29udGFpbmVyICJDdXN0b21lciBEQiIgewogICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkhvbGRzIHRoZSBjdXN0b21lciBkYXRhLCBpdHMgYSBkb2N1bWVudCBkYXRhYmFzZSIKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIm1vbmdvZGIiCiAgICAgICAgICAgICAgICB0YWdzICJtb25nb2RiIiAidGVhbS13cyIKICAgICAgICAgICAgfQogICAgICAgIAogICAgICAgICAgICB3ZWJBcGkgPSBjb250YWluZXIgIkN1c3RvbWVyIEFQSSIgewogICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoaXMgdGhlIG5ldyBBUEkgZm9yIG1hbmFnaW5nIGN1c3RvbWVyIGRhdGEiCiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICIuTkVUIgogICAgICAgICAgICAgICAgdGFncyAiY3NoYXJwIiAiV2ViQXBpIiAidGVhbS13cyIKICAgICAgICAKICAgICAgICAgICAgICAgIGN1c3RvbWVyVHJhbnNmb3JtZWRIYW5kbGVyID0gY29tcG9uZW50ICJDdXN0b21lciBUcmFuc2Zvcm1lZCBIYW5kbGVyIiB7CiAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIlN1YnNjcmliZXMgdG8gdGhlIGN1c3RvbWVyLXRyYW5zZm9ybWVkLXRvcGljIGFuZCBzYXZlcyBjaGFuZ2VzIHRvIHRoZSBkYXRhYmFzZSIKICAgICAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICIuTkVUIgogICAgICAgICAgICAgICAgICAgIHRhZ3MgInRlYW0td3MiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgCiAgICAgICAgICAgICAgICBnZXRDdXN0b21lckVuZHBvaW50ID0gY29tcG9uZW50ICJHZXQiIHsKICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiUmV0dXJucyBhbGwgY3VzdG9tZXJzIgogICAgICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIi5ORVQiCiAgICAgICAgICAgICAgICAgICAgdGFncyAiZW5kcG9pbnQiICJ0ZWFtLXdzIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgCiAgICAgICAgICAgIHdlYkFwcCA9IGNvbnRhaW5lciAiQmxhem9yIFdlYiBBcHBsaWNhdGlvbiIgewogICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSBmcm9udGVuZCBvZiB0aGUgbmV3IFdvcmtzaG9wIE1hbmFnZW1lbnQgU3lzdGVtIgogICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiLk5FVCIKICAgICAgICAgICAgICAgIHRhZ3MgImNzaGFycCIgIldlYkFwcCIgInRlYW0td3MiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgICAgIGNkY0N1c3RvbWVyQ29udGFpbmVyID0gY29udGFpbmVyICJDREMgQ3VzdG9tZXIiIHsKICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJUaGUgRGViZXppdW0gQ29ubmVjdG9yIHRvIHB1Ymxpc2ggQ0RDIENoYW5nZXMiCiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJkZWJleml1bSIKICAgICAgICAgICAgICAgIHRhZ3MgImRlYmV6aXVtIiAidGVhbS13cyIKICAgICAgICAgICAgfSAKICAgICAgICAKICAgICAgICAgICAgY2RjQ3VzdG9tZXJUb3BpYyA9IGNvbnRhaW5lciAiY2RjLnB1YmxpYy5jdXN0b21lciIgewogICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSB0b3BpYyB0byBwdXNoIGNkYyBjaGFuZ2VzIHRvIgogICAgICAgICAgICAgICAgdGVjaG5vbG9neSAia2Fma2EiCiAgICAgICAgICAgICAgICB0YWdzICJrYWZrYSIgInRlYW0td3MiCiAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgdHJhbnNmb3JtZXIgPSBjb250YWluZXIgInRyYW5zZm9ybWVyIHN0cmVhbSIgewogICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSB0cmFuc2Zvcm1lciBhcHBsaWNhdGlvbiwgY29udmVydHMgY2RjIGV2ZW50cyB0byBDdXN0b21lciIKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgImthZmthIHN0cmVhbSIKICAgICAgICAgICAgICAgIHRhZ3MgImphdmEiICJ0ZWFtLXdzIgogICAgICAgICAgICB9CiAgICAgICAgCiAgICAgICAgICAgIGN1c3RvbWVyVHJhbnNmb3JtZWRUb3BpYyA9IGNvbnRhaW5lciAiY3VzdG9tZXItdHJhbnNmb3JtZWQiIHsKICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJUaGUgdG9waWMgdG8gcHVzaCBjZGMgY2hhbmdlcyB0byIKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgImthZmthIgogICAgICAgICAgICAgICAgdGFncyAia2Fma2EiICJ0ZWFtLXdzIgogICAgICAgICAgICB9CiAgICAgICAgCiAgICAgICAgICAgIHdlYkFwaSAtPiBkYXRhYmFzZSAicmVhZHMgZGF0YSBmcm9tIgogICAgICAgICAgICB3ZWJBcHAgLT4gd2ViQXBpLmdldEN1c3RvbWVyRW5kcG9pbnQgImZldGNoZXMgY3VzdG9tZXIgZGF0YSIgewogICAgICAgICAgICAgICAgdGFncyAic3luYyIgImh0dHAiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgICAgIHRyYW5zZm9ybWVyIC0+IGNkY0N1c3RvbWVyVG9waWMgInN0cmVhbXMgZGF0YSJ7CiAgICAgICAgICAgICAgICB0YWdzIGFzeW5jCiAgICAgICAgICAgIH0KICAgICAgICAKICAgICAgICAgICAgdHJhbnNmb3JtZXIgLT4gY3VzdG9tZXJUcmFuc2Zvcm1lZFRvcGljICJwdXNoZXMgdHJhbnNmb3JtZWQgZGF0YSIgewogICAgICAgICAgICAgICAgdGFncyBhc3luYwogICAgICAgICAgICB9CiAgICAgICAgCiAgICAgICAgICAgIHdlYkFwaS5jdXN0b21lclRyYW5zZm9ybWVkSGFuZGxlciAtPiBjdXN0b21lclRyYW5zZm9ybWVkVG9waWMgInN1YnNjcmliZXMgdG8iewogICAgICAgICAgICAgICAgdGFncyBhc3luYwogICAgICAgICAgICB9CiAgICAgICAgICAgIHdlYkFwaS5jdXN0b21lclRyYW5zZm9ybWVkSGFuZGxlciAtPiBkYXRhYmFzZSAic2F2ZXMgYXJyaXZpbmcgZGF0YSIKICAgICAgICAgICAgd2ViQXBpLmN1c3RvbWVyVHJhbnNmb3JtZWRIYW5kbGVyIC0+IHdlYkFwcCAicHVzaGVzIGN1c3RvbWVyIGRhdGEgLSB3ZWJzb2NrZXQiIHsKICAgICAgICAgICAgICAgIHRhZ3MgImFzeW5jIgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIAogICAgICAgIHdvcmtzaG9wTWFuYWdlbWVudCAtPiBsZWdhY3lTeXN0ZW0gInN5bmNzIHRvIgogICAgICAgIGxlZ2FjeVN5c3RlbSAtPiB3b3Jrc2hvcE1hbmFnZW1lbnQgInN5bmNzIHRvIgogICAgICAgIAogICAgICAgIAogICAgICAgIHdvcmtzaG9wTWFuYWdlbWVudC5jZGNDdXN0b21lckNvbnRhaW5lciAtPiBsZWdhY3lTeXN0ZW0uZGF0YWJhc2UgIlBvbGxzIENEQyJ7CiAgICAgICAgICAgIHRhZ3MgYXN5bmMKICAgICAgICB9CiAgICAgICAgd29ya3Nob3BNYW5hZ2VtZW50LmNkY0N1c3RvbWVyQ29udGFpbmVyIC0+IHdvcmtzaG9wTWFuYWdlbWVudC5jZGNDdXN0b21lclRvcGljICJQdXNoZXMgQ2hhbmdlcyJ7CiAgICAgICAgICAgIHRhZ3MgYXN5bmMKICAgICAgICB9CiAgICB9CgogICAgdmlld3MgewoKICAgICAgICB0aGVtZSBkZWZhdWx0CiAgICAgICAgdGhlbWUgaHR0cHM6Ly9zdGF0aWMuc3RydWN0dXJpenIuY29tL3RoZW1lcy9taWNyb3NvZnQtYXp1cmUtMjAyMy4wMS4yNC90aGVtZS5qc29uCiAgICAgICAgdGhlbWUgaHR0cHM6Ly9zdGF0aWMuc3RydWN0dXJpenIuY29tL3RoZW1lcy9hbWF6b24td2ViLXNlcnZpY2VzLTIwMjMuMDEuMzEvdGhlbWUuanNvbgogICAgICAgIHRoZW1lIGh0dHBzOi8vc3RhdGljLnN0cnVjdHVyaXpyLmNvbS90aGVtZXMva3ViZXJuZXRlcy12MC4zL3RoZW1lLmpzb24KICAgICAgICAKICAgICAgICBzdHlsZXMgewogICAgICAgIAogICAgICAgICAgICBlbGVtZW50ICJTb2Z0d2FyZSBTeXN0ZW0iIHsKICAgICAgICAgICAgICAgIHNoYXBlIEJveAogICAgICAgICAgICAgICAgc3Ryb2tlV2lkdGggNAogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICBlbGVtZW50IENvbnRhaW5lciB7CiAgICAgICAgICAgICAgICBzaGFwZSByb3VuZGVkYm94CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICM0MzhkZDUKICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCBDb21wb25lbnQgewogICAgICAgICAgICAgICAgc2hhcGUgQm94CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICM0MzhkZDUKICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAiU2VydmljZSIgewogICAgICAgICAgICAgICAgc2hhcGUgSGV4YWdvbgogICAgICAgICAgICAgICAgZm9udFNpemUgMTYKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAiV2ViQXBpIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBIZXhhZ29uCiAgICAgICAgICAgICAgICBmb250U2l6ZSAxNgogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICBlbGVtZW50ICJEYXRhYmFzZSIgewogICAgICAgICAgICAgICAgc2hhcGUgY3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAiU3RvcmFnZSIgewogICAgICAgICAgICAgICAgc2hhcGUgY3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAiV2ViQXBwIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBXZWJCcm93c2VyCiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgICAgIGVsZW1lbnQgIk1vYmlsZUFwcCIgewogICAgICAgICAgICAgICAgc2hhcGUgTW9iaWxlRGV2aWNlUG9ydHJhaXQKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAiR3JvdXAiIHsKICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYKICAgICAgICAgICAgICAgIHN0cm9rZVdpZHRoIDUKICAgICAgICAgICAgfQogICAgICAgIAogICAgICAgICAgICBlbGVtZW50ICJwb3N0Z3JlcyIgewogICAgICAgICAgICAgICAgc2hhcGUgY3lsaW5kZXIKICAgICAgICAgICAgICAgIGljb24gLi4vYXNzZXRzL3Bvc3RncmVzLnBuZwogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICBlbGVtZW50ICJtb25nb2RiIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBjeWxpbmRlcgogICAgICAgICAgICAgICAgaWNvbiAuLi9hc3NldHMvbW9uZ29kYi5wbmcKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAicmVkaXMiIHsKICAgICAgICAgICAgICAgIHNoYXBlIGN5bGluZGVyCiAgICAgICAgICAgICAgICBpY29uIC4uL2Fzc2V0cy9yZWRpcy5wbmcKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAicXVldWUiIHsKICAgICAgICAgICAgICAgIHNoYXBlIFBpcGUKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJ0b3BpYyIgewogICAgICAgICAgICAgICAgc2hhcGUgUGlwZQogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICBlbGVtZW50ICJyYWJiaXRtcSIgewogICAgICAgICAgICAgICAgc2hhcGUgUGlwZQogICAgICAgICAgICAgICAgaWNvbiAuLi9hc3NldHMvcmFiYml0bXEucG5nCiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgICAgIGVsZW1lbnQgImthZmthIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBQaXBlCiAgICAgICAgICAgICAgICBpY29uIC4uL2Fzc2V0cy9rYWZrYS5wbmcKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAiZGViZXppdW0iIHsKICAgICAgICAgICAgICAgIHNoYXBlIEhleGFnb24KICAgICAgICAgICAgICAgIGljb24gLi4vYXNzZXRzL2RlYmV6aXVtLnBuZwogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAia2Fma2Etc3RyZWFtIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBIZXhhZ29uCiAgICAgICAgICAgICAgICBmb250U2l6ZSAxNgogICAgICAgICAgICAgICAgaWNvbiAuLi9hc3NldHMvcml2ZXIucG5nCiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgICAgIGVsZW1lbnQgImVuZHBvaW50IiB7CiAgICAgICAgICAgICAgICBzaGFwZSBDb21wb25lbnQKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAiZG90bmV0IiB7CiAgICAgICAgICAgICAgICBzaGFwZSBIZXhhZ29uCiAgICAgICAgICAgICAgICBmb250U2l6ZSAxNgogICAgICAgICAgICAgICAgaWNvbiAuLi9hc3NldHMvbmV0LWNvcmUucG5nCiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgICAgIGVsZW1lbnQgIi5ORVQiIHsKICAgICAgICAgICAgICAgIHNoYXBlIEhleGFnb24KICAgICAgICAgICAgICAgIGZvbnRTaXplIDE2CiAgICAgICAgICAgICAgICBpY29uIC4uL2Fzc2V0cy9uZXQtY29yZS5wbmcKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAiY3NoYXJwIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBIZXhhZ29uCiAgICAgICAgICAgICAgICBmb250U2l6ZSAxNgogICAgICAgICAgICAgICAgaWNvbiAuLi9hc3NldHMvY3NoYXJwLnBuZwogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICBlbGVtZW50ICJqYXZhIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBIZXhhZ29uCiAgICAgICAgICAgICAgICBmb250U2l6ZSAxNgogICAgICAgICAgICAgICAgaWNvbiAuLi9hc3NldHMvamF2YS5wbmcKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAKICAgICAgICAgICAgcmVsYXRpb25zaGlwICJSZWxhdGlvbnNoaXAiIHsKICAgICAgICAgICAgICAgIGRhc2hlZCBmYWxzZQogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICByZWxhdGlvbnNoaXAgInN5bmMiIHsKICAgICAgICAgICAgICAgIGRhc2hlZCBmYWxzZQogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICByZWxhdGlvbnNoaXAgImFzeW5jIiB7CiAgICAgICAgICAgICAgICBkYXNoZWQgdHJ1ZQogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICByZWxhdGlvbnNoaXAgIm1hbnVhbCIgewogICAgICAgICAgICAgICAgY29sb3IgR29sZAogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAidGVhbS1sZWdhY3kiIHsKICAgICAgICAgICAgICAgIHN0cm9rZSAjRkY2QjZCCiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCAxMAogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICBlbGVtZW50ICJ0ZWFtLXdzIiB7CiAgICAgICAgICAgICAgICBzdHJva2UgIzFFQUVFOQogICAgICAgICAgICAgICAgc3Ryb2tlV2lkdGggMTAKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZWxlbWVudCAiZXh0ZXJuYWwiIHsKICAgICAgICAgICAgICAgIG1ldGFkYXRhIGZhbHNlCiAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiBmYWxzZQogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMDMwMzAzCiAgICAgICAgICAgICAgICBjb2xvciAjRjVGNkY4CiAgICAgICAgICAgICAgICBzdHJva2UgZGFya2dyYXkKICAgICAgICAgICAgICAgIHN0cm9rZVdpZHRoIDEwCiAgICAgICAgICAgICAgICBjb2xvciB3aGl0ZQogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICBzeXN0ZW1MYW5kc2NhcGUgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICB9CiAgICAgICAgCiAgICAgICAgc3R5bGVzIHsKICAgICAgICB9CiAgICAgICAgCiAgICAgICAgc3lzdGVtQ29udGV4dCBsZWdhY3lTeXN0ZW0gIlN5c0NvbnRleHRfTGVnYWN5QXBwIiAiU2hvd3MgdGhlIHN5c3RlbSByZWxhdGlvbnMgb2YgdGhlIGxlZ2FjeSBhcHBsaWNhdGlvbiIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b2xheW91dAogICAgICAgIH0KICAgICAgICAKICAgICAgICBjb250YWluZXIgbGVnYWN5U3lzdGVtICJMZWdhY3lfQ29udGFpbmVyVmlldyIgIlNob3dzIGFsbCB0aGUgY29udGFpbmVycyBvZiB0aGUgTGVnYWN5IEFwcCIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b2xheW91dAogICAgICAgIH0KICAgICAgICBzdHlsZXMgewogICAgICAgIH0KICAgICAgICAKICAgICAgICBzeXN0ZW1Db250ZXh0IHdvcmtzaG9wTWFuYWdlbWVudCAiU3lzQ29udGV4dF9Xc01uZ0FwcCIgIlNob3dzIHRoZSBzeXN0ZW0gcmVsYXRpb25zIG9mIHRoZSBXb3Jrc2hvcCBNYW5hZ2VtZW50IiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvbGF5b3V0CiAgICAgICAgfQogICAgICAgIAogICAgICAgIC8vY29udGFpbmVyIHdvcmtzaG9wTWFuYWdlbWVudCAiV1NfQ29udGFpbmVyVmlld19XaXRoX0V4dGVybmFsX1N5c3RlbXMiICJTaG93cyBhbGwgdGhlIGNvbnRhaW5lcnMgb2YgdGhlIFdvcmtzaG9wIE1hbmFnZW1lbnQgU3lzdGVtIGFuZCBSZWxhdGVkIFN5c3RlbXMiIHsKICAgICAgICAvLyAgICBpbmNsdWRlICoKICAgICAgICAvL30KICAgICAgICAKICAgICAgICBjb250YWluZXIgd29ya3Nob3BNYW5hZ2VtZW50ICJXU19Db250YWluZXJWaWV3X1dpdGhfRXh0ZXJuYWxfQ29udGFpbmVycyIgIlNob3dzIGFsbCB0aGUgY29udGFpbmVycyBvZiB0aGUgV29ya3Nob3AgTWFuYWdlbWVudCBTeXN0ZW0gJiBSZWxhdGVkIEV4dGVybmFsIENvbnRhaW5lcnMiIHsKICAgICAgICAgICAgaW5jbHVkZSAiLT5lbGVtZW50LnRhZz09dGVhbS13cy0+ICYmIGVsZW1lbnQudHlwZT09Q29udGFpbmVyIgogICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgY29tcG9uZW50IHdvcmtzaG9wTWFuYWdlbWVudC53ZWJBcGkgIldTX1dlYkFwaV9Db21wb25lbnRzIiAiQWxsIHRoZSBjb21wb25lbnRzIHJ1bm5pbmcgaW5zaWRlIHRoZSB3ZWIgYXBpIHNlcnZpY2UiewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b2xheW91dAogICAgICAgIH0KICAgIH0KCn0KICAgIAo="
   },
   "configuration" : { },
   "model" : {
     "softwareSystems" : [ {
-      "id" : "1",
-      "tags" : "Element,Software System,team-legacy",
-      "properties" : {
-        "structurizr.dsl.identifier" : "legacysystem"
-      },
-      "name" : "The legacy software system",
-      "relationships" : [ {
-        "id" : "26",
-        "tags" : "Relationship",
-        "properties" : {
-          "structurizr.dsl.identifier" : "67bcab66-d6f0-4840-af8f-c2489e47c574"
-        },
-        "sourceId" : "1",
-        "destinationId" : "5",
-        "description" : "syncs to"
-      } ],
-      "location" : "Unspecified",
-      "containers" : [ {
-        "id" : "3",
-        "tags" : "Element,Container,csharp,WebApp,team-legacy",
-        "properties" : {
-          "structurizr.dsl.identifier" : "legacysystem.webapp"
-        },
-        "name" : "MVC Web App",
-        "description" : "This is the old monolithic application",
-        "relationships" : [ {
-          "id" : "4",
-          "tags" : "Relationship",
-          "properties" : {
-            "structurizr.dsl.identifier" : "c6b0bf89-ff5b-4947-b7c4-836230100d13"
-          },
-          "sourceId" : "3",
-          "destinationId" : "2",
-          "description" : "Reads/writes data from/to"
-        } ],
-        "technology" : ".NET",
-        "documentation" : { }
-      }, {
-        "id" : "2",
-        "tags" : "Element,Container,postgres,team-legacy",
-        "properties" : {
-          "structurizr.dsl.identifier" : "legacysystem.database"
-        },
-        "name" : "Legacy",
-        "description" : "Holds the legacy data, a relational database",
-        "technology" : "postgres",
-        "documentation" : { }
-      } ],
-      "documentation" : { }
-    }, {
       "id" : "5",
       "tags" : "Element,Software System,team-ws",
       "properties" : {
@@ -66,59 +17,23 @@
       },
       "name" : "The new Workshop Management System",
       "relationships" : [ {
-        "id" : "25",
-        "tags" : "Relationship",
-        "properties" : {
-          "structurizr.dsl.identifier" : "70c6eb37-b773-489f-88d5-b6a8f958ad72"
-        },
-        "sourceId" : "5",
-        "destinationId" : "1",
-        "description" : "syncs to"
-      }, {
         "id" : "29",
         "sourceId" : "5",
         "destinationId" : "2",
         "description" : "Polls CDC",
         "linkedRelationshipId" : "27"
+      }, {
+        "id" : "25",
+        "tags" : "Relationship",
+        "properties" : {
+          "structurizr.dsl.identifier" : "96dc775a-2b46-4a47-845b-35195c57aaa5"
+        },
+        "sourceId" : "5",
+        "destinationId" : "1",
+        "description" : "syncs to"
       } ],
       "location" : "Unspecified",
       "containers" : [ {
-        "id" : "10",
-        "tags" : "Element,Container,csharp,WebApp,team-ws",
-        "properties" : {
-          "structurizr.dsl.identifier" : "workshopmanagement.webapp"
-        },
-        "name" : "Blazor Web Application",
-        "description" : "The frontend of the new Workshop Management System",
-        "relationships" : [ {
-          "id" : "16",
-          "tags" : "Relationship,sync,http",
-          "properties" : {
-            "structurizr.dsl.identifier" : "1c7526bc-1e40-4456-ac75-52edf1863ceb"
-          },
-          "sourceId" : "10",
-          "destinationId" : "9",
-          "description" : "fetches customer data"
-        }, {
-          "id" : "17",
-          "sourceId" : "10",
-          "destinationId" : "7",
-          "description" : "fetches customer data",
-          "linkedRelationshipId" : "16"
-        } ],
-        "technology" : ".NET",
-        "documentation" : { }
-      }, {
-        "id" : "12",
-        "tags" : "Element,Container,kafka,team-ws",
-        "properties" : {
-          "structurizr.dsl.identifier" : "workshopmanagement.cdccustomertopic"
-        },
-        "name" : "cdc.public.customer",
-        "description" : "The topic to push cdc changes to",
-        "technology" : "kafka",
-        "documentation" : { }
-      }, {
         "id" : "7",
         "tags" : "Element,Container,csharp,WebApi,team-ws",
         "properties" : {
@@ -130,26 +45,36 @@
           "id" : "15",
           "tags" : "Relationship",
           "properties" : {
-            "structurizr.dsl.identifier" : "527b749b-a904-42fb-b1d8-3f0aa3e0215c"
+            "structurizr.dsl.identifier" : "54c8994b-609c-4d9c-96e0-dd20b0199bf4"
           },
           "sourceId" : "7",
           "destinationId" : "6",
           "description" : "reads data from"
-        }, {
-          "id" : "21",
-          "sourceId" : "7",
-          "destinationId" : "14",
-          "description" : "subscribes to",
-          "linkedRelationshipId" : "20"
         }, {
           "id" : "24",
           "sourceId" : "7",
           "destinationId" : "10",
           "description" : "pushes customer data - websocket",
           "linkedRelationshipId" : "23"
+        }, {
+          "id" : "21",
+          "sourceId" : "7",
+          "destinationId" : "14",
+          "description" : "subscribes to",
+          "linkedRelationshipId" : "20"
         } ],
         "technology" : ".NET",
         "components" : [ {
+          "id" : "9",
+          "tags" : "Element,Component,endpoint,team-ws",
+          "properties" : {
+            "structurizr.dsl.identifier" : "workshopmanagement.webapi.getcustomerendpoint"
+          },
+          "name" : "Get",
+          "description" : "Returns all customers",
+          "technology" : ".NET",
+          "documentation" : { }
+        }, {
           "id" : "8",
           "tags" : "Element,Component,team-ws",
           "properties" : {
@@ -161,7 +86,7 @@
             "id" : "20",
             "tags" : "Relationship,async",
             "properties" : {
-              "structurizr.dsl.identifier" : "801648a5-cad9-4b02-bbe7-27de2ba794ee"
+              "structurizr.dsl.identifier" : "7d990e50-bda0-4a05-bb86-8d000a1e8790"
             },
             "sourceId" : "8",
             "destinationId" : "14",
@@ -170,7 +95,7 @@
             "id" : "22",
             "tags" : "Relationship",
             "properties" : {
-              "structurizr.dsl.identifier" : "88cb0b76-7158-460a-be90-5185ca746e6c"
+              "structurizr.dsl.identifier" : "318f07b7-9339-4c92-a1fc-fb171da48a86"
             },
             "sourceId" : "8",
             "destinationId" : "6",
@@ -179,22 +104,12 @@
             "id" : "23",
             "tags" : "Relationship,async",
             "properties" : {
-              "structurizr.dsl.identifier" : "5cb56c57-6064-417d-976c-0c14db929342"
+              "structurizr.dsl.identifier" : "61eb14c6-0d4e-4093-8555-1e1b12fa673c"
             },
             "sourceId" : "8",
             "destinationId" : "10",
             "description" : "pushes customer data - websocket"
           } ],
-          "technology" : ".NET",
-          "documentation" : { }
-        }, {
-          "id" : "9",
-          "tags" : "Element,Component,endpoint,team-ws",
-          "properties" : {
-            "structurizr.dsl.identifier" : "workshopmanagement.webapi.getcustomerendpoint"
-          },
-          "name" : "Get",
-          "description" : "Returns all customers",
           "technology" : ".NET",
           "documentation" : { }
         } ],
@@ -210,41 +125,6 @@
         "technology" : "kafka",
         "documentation" : { }
       }, {
-        "id" : "11",
-        "tags" : "Element,Container,debezium,team-ws",
-        "properties" : {
-          "structurizr.dsl.identifier" : "workshopmanagement.cdccustomercontainer"
-        },
-        "name" : "CDC Customer",
-        "description" : "The Debezium Connector to publish CDC Changes",
-        "relationships" : [ {
-          "id" : "27",
-          "tags" : "Relationship,async",
-          "properties" : {
-            "structurizr.dsl.identifier" : "93cc6d0e-0614-479d-b0a9-0118694d4101"
-          },
-          "sourceId" : "11",
-          "destinationId" : "2",
-          "description" : "Polls CDC"
-        }, {
-          "id" : "28",
-          "sourceId" : "11",
-          "destinationId" : "1",
-          "description" : "Polls CDC",
-          "linkedRelationshipId" : "27"
-        }, {
-          "id" : "30",
-          "tags" : "Relationship,async",
-          "properties" : {
-            "structurizr.dsl.identifier" : "e6e0e48b-f834-4f09-ab4e-b740d15d2cb0"
-          },
-          "sourceId" : "11",
-          "destinationId" : "12",
-          "description" : "Pushes Changes"
-        } ],
-        "technology" : "debezium",
-        "documentation" : { }
-      }, {
         "id" : "13",
         "tags" : "Element,Container,java,team-ws",
         "properties" : {
@@ -256,7 +136,7 @@
           "id" : "18",
           "tags" : "Relationship,async",
           "properties" : {
-            "structurizr.dsl.identifier" : "5e620084-5346-4d0d-a155-dbc36c4582b6"
+            "structurizr.dsl.identifier" : "1477757e-8eb4-4633-b9f5-1ef7ac963f41"
           },
           "sourceId" : "13",
           "destinationId" : "12",
@@ -265,13 +145,84 @@
           "id" : "19",
           "tags" : "Relationship,async",
           "properties" : {
-            "structurizr.dsl.identifier" : "34fe683f-dd42-43fb-a2b7-da53f2d6afb5"
+            "structurizr.dsl.identifier" : "b511df6b-6bec-460f-bb91-1bcc8d97d5c8"
           },
           "sourceId" : "13",
           "destinationId" : "14",
           "description" : "pushes transformed data"
         } ],
         "technology" : "kafka stream",
+        "documentation" : { }
+      }, {
+        "id" : "12",
+        "tags" : "Element,Container,kafka,team-ws",
+        "properties" : {
+          "structurizr.dsl.identifier" : "workshopmanagement.cdccustomertopic"
+        },
+        "name" : "cdc.public.customer",
+        "description" : "The topic to push cdc changes to",
+        "technology" : "kafka",
+        "documentation" : { }
+      }, {
+        "id" : "11",
+        "tags" : "Element,Container,debezium,team-ws",
+        "properties" : {
+          "structurizr.dsl.identifier" : "workshopmanagement.cdccustomercontainer"
+        },
+        "name" : "CDC Customer",
+        "description" : "The Debezium Connector to publish CDC Changes",
+        "relationships" : [ {
+          "id" : "27",
+          "tags" : "Relationship,async",
+          "properties" : {
+            "structurizr.dsl.identifier" : "64eced57-2836-4ab5-9cb3-278b2c6797cc"
+          },
+          "sourceId" : "11",
+          "destinationId" : "2",
+          "description" : "Polls CDC"
+        }, {
+          "id" : "30",
+          "tags" : "Relationship,async",
+          "properties" : {
+            "structurizr.dsl.identifier" : "4e8ff454-924c-4f44-ae0e-b632ef605be0"
+          },
+          "sourceId" : "11",
+          "destinationId" : "12",
+          "description" : "Pushes Changes"
+        }, {
+          "id" : "28",
+          "sourceId" : "11",
+          "destinationId" : "1",
+          "description" : "Polls CDC",
+          "linkedRelationshipId" : "27"
+        } ],
+        "technology" : "debezium",
+        "documentation" : { }
+      }, {
+        "id" : "10",
+        "tags" : "Element,Container,csharp,WebApp,team-ws",
+        "properties" : {
+          "structurizr.dsl.identifier" : "workshopmanagement.webapp"
+        },
+        "name" : "Blazor Web Application",
+        "description" : "The frontend of the new Workshop Management System",
+        "relationships" : [ {
+          "id" : "17",
+          "sourceId" : "10",
+          "destinationId" : "7",
+          "description" : "fetches customer data",
+          "linkedRelationshipId" : "16"
+        }, {
+          "id" : "16",
+          "tags" : "Relationship,sync,http",
+          "properties" : {
+            "structurizr.dsl.identifier" : "7015b97e-3edb-49cd-8959-a95e6c3e04b7"
+          },
+          "sourceId" : "10",
+          "destinationId" : "9",
+          "description" : "fetches customer data"
+        } ],
+        "technology" : ".NET",
         "documentation" : { }
       }, {
         "id" : "6",
@@ -282,6 +233,56 @@
         "name" : "Customer DB",
         "description" : "Holds the customer data, its a document database",
         "technology" : "mongodb",
+        "documentation" : { }
+      } ],
+      "documentation" : { }
+    }, {
+      "id" : "1",
+      "tags" : "Element,Software System,team-legacy",
+      "properties" : {
+        "structurizr.dsl.identifier" : "legacysystem"
+      },
+      "name" : "The legacy software system",
+      "relationships" : [ {
+        "id" : "26",
+        "tags" : "Relationship",
+        "properties" : {
+          "structurizr.dsl.identifier" : "954ad4a3-e0f4-4978-9811-079098bca23b"
+        },
+        "sourceId" : "1",
+        "destinationId" : "5",
+        "description" : "syncs to"
+      } ],
+      "location" : "Unspecified",
+      "containers" : [ {
+        "id" : "2",
+        "tags" : "Element,Container,postgres,team-legacy",
+        "properties" : {
+          "structurizr.dsl.identifier" : "legacysystem.database"
+        },
+        "name" : "Legacy",
+        "description" : "Holds the legacy data, a relational database",
+        "technology" : "postgres",
+        "documentation" : { }
+      }, {
+        "id" : "3",
+        "tags" : "Element,Container,csharp,WebApp,team-legacy",
+        "properties" : {
+          "structurizr.dsl.identifier" : "legacysystem.webapp"
+        },
+        "name" : "MVC Web App",
+        "description" : "This is the old monolithic application",
+        "relationships" : [ {
+          "id" : "4",
+          "tags" : "Relationship",
+          "properties" : {
+            "structurizr.dsl.identifier" : "58286086-d0b8-4042-ab54-c5331c27f287"
+          },
+          "sourceId" : "3",
+          "destinationId" : "2",
+          "description" : "Reads/writes data from/to"
+        } ],
+        "technology" : ".NET",
         "documentation" : { }
       } ],
       "documentation" : { }
@@ -328,6 +329,10 @@
       "order" : 2,
       "description" : "Shows the system relations of the legacy application",
       "softwareSystemId" : "1",
+      "dimensions" : {
+        "width" : 1290,
+        "height" : 1300
+      },
       "automaticLayout" : {
         "implementation" : "Graphviz",
         "rankDirection" : "TopBottom",
@@ -339,23 +344,35 @@
       "enterpriseBoundaryVisible" : true,
       "elements" : [ {
         "id" : "1",
-        "x" : 0,
-        "y" : 0
+        "x" : 420,
+        "y" : 200
       }, {
         "id" : "5",
-        "x" : 0,
-        "y" : 0
+        "x" : 420,
+        "y" : 800
       } ],
       "relationships" : [ {
-        "id" : "26"
+        "id" : "26",
+        "vertices" : [ {
+          "x" : 495,
+          "y" : 650
+        } ]
       }, {
-        "id" : "25"
+        "id" : "25",
+        "vertices" : [ {
+          "x" : 795,
+          "y" : 650
+        } ]
       } ]
     }, {
       "key" : "SysContext_WsMngApp",
       "order" : 4,
       "description" : "Shows the system relations of the Workshop Management",
       "softwareSystemId" : "5",
+      "dimensions" : {
+        "width" : 1530,
+        "height" : 1300
+      },
       "automaticLayout" : {
         "implementation" : "Graphviz",
         "rankDirection" : "TopBottom",
@@ -367,17 +384,25 @@
       "enterpriseBoundaryVisible" : true,
       "elements" : [ {
         "id" : "1",
-        "x" : 0,
-        "y" : 0
+        "x" : 540,
+        "y" : 199
       }, {
         "id" : "5",
-        "x" : 0,
-        "y" : 0
+        "x" : 540,
+        "y" : 799
       } ],
       "relationships" : [ {
-        "id" : "26"
+        "id" : "26",
+        "vertices" : [ {
+          "x" : 615,
+          "y" : 649
+        } ]
       }, {
-        "id" : "25"
+        "id" : "25",
+        "vertices" : [ {
+          "x" : 915,
+          "y" : 649
+        } ]
       } ]
     } ],
     "containerViews" : [ {
@@ -385,6 +410,10 @@
       "order" : 3,
       "description" : "Shows all the containers of the Legacy App",
       "softwareSystemId" : "1",
+      "dimensions" : {
+        "width" : 1620,
+        "height" : 1411
+      },
       "automaticLayout" : {
         "implementation" : "Graphviz",
         "rankDirection" : "TopBottom",
@@ -396,16 +425,16 @@
       "externalSoftwareSystemBoundariesVisible" : true,
       "elements" : [ {
         "id" : "2",
-        "x" : 0,
-        "y" : 0
+        "x" : 949,
+        "y" : 819
       }, {
         "id" : "3",
-        "x" : 0,
-        "y" : 0
+        "x" : 949,
+        "y" : 219
       }, {
         "id" : "5",
-        "x" : 0,
-        "y" : 0
+        "x" : 199,
+        "y" : 219
       } ],
       "relationships" : [ {
         "id" : "29"
@@ -432,13 +461,13 @@
         "x" : 2579,
         "y" : 929
       }, {
-        "id" : "2",
-        "x" : 3329,
-        "y" : 929
-      }, {
         "id" : "13",
         "x" : 1829,
         "y" : 329
+      }, {
+        "id" : "2",
+        "x" : 3329,
+        "y" : 929
       }, {
         "id" : "14",
         "x" : 1829,
@@ -486,6 +515,10 @@
       "key" : "WS_WebApi_Components",
       "order" : 6,
       "description" : "All the components running inside the web api service",
+      "dimensions" : {
+        "width" : 1995,
+        "height" : 1900
+      },
       "automaticLayout" : {
         "implementation" : "Graphviz",
         "rankDirection" : "TopBottom",
@@ -498,24 +531,24 @@
       "externalContainerBoundariesVisible" : true,
       "elements" : [ {
         "id" : "14",
-        "x" : 0,
-        "y" : 0
+        "x" : 594,
+        "y" : 1399
       }, {
         "id" : "6",
-        "x" : 0,
-        "y" : 0
+        "x" : 1344,
+        "y" : 1399
       }, {
         "id" : "8",
-        "x" : 0,
-        "y" : 0
+        "x" : 969,
+        "y" : 799
       }, {
         "id" : "9",
-        "x" : 0,
-        "y" : 0
+        "x" : 219,
+        "y" : 799
       }, {
         "id" : "10",
-        "x" : 0,
-        "y" : 0
+        "x" : 594,
+        "y" : 199
       } ],
       "relationships" : [ {
         "id" : "16"
@@ -659,7 +692,8 @@
       },
       "themes" : [ "https://static.structurizr.com/themes/default/theme.json", "https://static.structurizr.com/themes/microsoft-azure-2023.01.24/theme.json", "https://static.structurizr.com/themes/amazon-web-services-2023.01.31/theme.json", "https://static.structurizr.com/themes/kubernetes-v0.3/theme.json" ],
       "terminology" : { },
-      "lastSavedView" : "SysContext_WsMngApp"
+      "metadataSymbols" : "SquareBrackets",
+      "lastSavedView" : "SysContext_LegacyApp"
     }
   }
 }

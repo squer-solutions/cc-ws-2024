@@ -26,17 +26,6 @@ public class TransformerService {
 
     final StreamsBuilder builder = new StreamsBuilder();
 
-    /*
-     * To consume the stream, you will need something along the lines of:
-     *  KStream<cdc.public$.customers.Key, cdc.public$.customers.Envelope> sourceStream = builder.stream(
-     *         CDC_TOPIC);
-     *
-     *  sourceStream.peek((key, value) -> {
-     *       System.out.println("Key: " + key);
-     *       System.out.println("Value before: " + value.getBefore());
-     *       System.out.println("Value after: " + value.getAfter());
-     *     });
-     */
     KStream<cdc.public$.customers.Key, cdc.public$.customers.Envelope> sourceStream = builder.stream(
         CDC_TOPIC);
 
@@ -48,11 +37,8 @@ public class TransformerService {
 
     sourceStream
         .mapValues(TransformerService::mapCustomer)
-        .map((k, v) -> KeyValue.pair(v.getId().toString(), v))
-        .to(TRANSFORMER_TOPIC,
-            Produced.with(Serdes.String(), null)); //TODO: include this tip in the readme or comment
-
-    // TODO: implement the stream topology
+        .map((k, v) -> KeyValue.pair(v.getUsername(), v))
+        .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), null));
 
     Topology topology = builder.build();
 
@@ -67,19 +53,19 @@ public class TransformerService {
   private static Customer mapCustomer(cdc.public$.customers.Envelope envelope) {
     cdc.public$.customers.Value updatedValue = envelope.getAfter();
     Address deliveryAddress = Address.newBuilder()
-        .setLine1(updatedValue.getDeliveryAddress())
+        .setLien1(updatedValue.getDeliveryAddress())
         .setZipcode(updatedValue.getDeliveryZipcode())
         .setCity(updatedValue.getDeliveryCity())
         .build();
 
     Address billingAddress = updatedValue.getBillingAddress() == null
         ? Address.newBuilder()
-        .setLine1(updatedValue.getDeliveryAddress())
+        .setLien1(updatedValue.getDeliveryAddress())
         .setZipcode(updatedValue.getDeliveryZipcode())
         .setCity(updatedValue.getDeliveryCity())
         .build()
         : Address.newBuilder()
-            .setLine1(updatedValue.getBillingAddress())
+            .setLien1(updatedValue.getBillingAddress())
             .setZipcode(updatedValue.getBillingZipcode())
             .setCity(updatedValue.getBillingCity())
             .build();

@@ -52,44 +52,68 @@ We are now ready to implement the stream topology:
 <summary>After completing the previous steps you could use the following for the stream topology</summary>
 
 ```java
-cdcStream
-    .mapValues(envelope -> {
-                Address deliveryAddress = Address.newBuilder()
-                        .setLien1(envelope.getAfter().getDeliveryAddress())
-                        .setZipcode(envelope.getAfter().getDeliveryZipcode())
-                        .setCity(envelope.getAfter().getDeliveryCity())
-                        .build();
+public void run() {
 
-                Address billingAddress = envelope.getAfter().getBillingAddress() == null
-                        ? Address.newBuilder()
-                        .setLien1(envelope.getAfter().getDeliveryAddress())
-                        .setZipcode(envelope.getAfter().getDeliveryZipcode())
-                        .setCity(envelope.getAfter().getDeliveryCity())
-                        .build()
-                        : Address.newBuilder()
-                        .setLien1(envelope.getAfter().getBillingAddress())
-                        .setZipcode(envelope.getAfter().getBillingZipcode())
-                        .setCity(envelope.getAfter().getBillingCity())
-                        .build();
+  final StreamsBuilder builder = new StreamsBuilder();
 
-                String[] names = envelope.getAfter().getFullName().toString().split(" ");
-                String firstName = names[0];
-                String lastName = names.length > 1 ? names[1] : names[0];
+  KStream<cdc.public$.customers.Key, cdc.public$.customers.Envelope> sourceStream = builder.stream(
+          CDC_TOPIC);
 
-                return Customer.newBuilder()
-                        .setId(UUID.fromString(envelope.getAfter().getCustomerId().toString()))
-                        .setUsername(envelope.getAfter().getUserName())
-                        .setFirstName(firstName)
-                        .setLastName(lastName)
-                        .setEmail(envelope.getAfter().getEmail())
-                        .setDefaultDeliveryAddress(deliveryAddress)
-                        .setDefaultBillingAddress(billingAddress)
-                        .build();
-            }
+  sourceStream.peek((key, value) -> {
+    System.out.println("Key: " + key);
+    System.out.println("Value before: " + value.getBefore());
+    System.out.println("Value after: " + value.getAfter());
+  });
 
-    )
-    .map((k, v) -> KeyValue.pair(v.getUsername().toString(), v))
-    .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), new SpecificAvroSerde<>(schemaRegistryClient)));
+  sourceStream
+          .mapValues(TransformerService::mapCustomer)
+          .map((k, v) -> KeyValue.pair(v.getUsername(), v))
+          .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), null));
+
+  Topology topology = builder.build();
+
+  KafkaStreams streams = new KafkaStreams(topology, properties);
+
+  // attach shutdown handler to catch control-c
+  Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+
+  streams.start();
+}
+
+private static Customer mapCustomer(cdc.public$.customers.Envelope envelope) {
+  cdc.public$.customers.Value updatedValue = envelope.getAfter();
+  Address deliveryAddress = Address.newBuilder()
+          .setLien1(updatedValue.getDeliveryAddress())
+          .setZipcode(updatedValue.getDeliveryZipcode())
+          .setCity(updatedValue.getDeliveryCity())
+          .build();
+
+  Address billingAddress = updatedValue.getBillingAddress() == null
+          ? Address.newBuilder()
+          .setLien1(updatedValue.getDeliveryAddress())
+          .setZipcode(updatedValue.getDeliveryZipcode())
+          .setCity(updatedValue.getDeliveryCity())
+          .build()
+          : Address.newBuilder()
+                  .setLien1(updatedValue.getBillingAddress())
+                  .setZipcode(updatedValue.getBillingZipcode())
+                  .setCity(updatedValue.getBillingCity())
+                  .build();
+
+  String[] names = updatedValue.getFullName().split(" ");
+  String firstName = names[0];
+  String lastName = names.length > 1 ? names[1] : names[0];
+
+  return Customer.newBuilder()
+          .setId(UUID.fromString(updatedValue.getCustomerId()))
+          .setUsername(updatedValue.getUserName())
+          .setFirstName(firstName)
+          .setLastName(lastName)
+          .setEmail(updatedValue.getEmail())
+          .setDefaultDeliveryAddress(deliveryAddress)
+          .setDefaultBillingAddress(billingAddress)
+          .build();
+}
 
 ```
 </details>

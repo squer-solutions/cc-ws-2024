@@ -26,7 +26,7 @@ public class TransformerService {
 
     final StreamsBuilder builder = new StreamsBuilder();
 
-    /**
+    /*
      * To consume the stream, you will need something along the lines of:
      *  KStream<cdc.public$.customers.Key, cdc.public$.customers.Envelope> sourceStream = builder.stream(
      *         CDC_TOPIC);

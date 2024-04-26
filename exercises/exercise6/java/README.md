@@ -3,41 +3,22 @@
 After bringing up your environment the first thing you need is to download the schema files for the events published by
 `Debezium` connector.
 
-The following command lists all the registered schemas:
+## Retrieving the schema files
 
-```http request
-GET http://localhost:8081/subjects
-```
+### Via Confluent Control Center
+* The quickest way to retrieve the current schema for a topic is by downloading it from the control center
+* Open the [ControlCenter](http://localhost:9021/), open the Topics section and find the CDC topic
+* Open the tab "Schema", and in the context menu (...), you can download both the key-schema and the value-schema
+* Place the schemas in the `src/main/resources/avro` folder
 
-Checkout the other commands listed in the [schema-registry.http](./scripts/schema-registry.http) file; now, you should
-be able to fetch the schema for a specific subject and version:
+## Avro-based code generation
+* The project is set up to generate the required Java-classes from the downloaded avro schemas
+  * It is highly recommended to inspect the `pom.xml` in detail to understand which steps are performed
 
-```http request
-### GET the schema by its id
-GET http://localhost:8081/schemas/ids/2
-```
-
-Take the schema property value out and create `resources/avro/cdc-customers-v1-avsc` file, do the same thing for the other
-schema: 
-
-```http request
-### GET the schema by its id
-GET http://localhost:8081/schemas/ids/1
-```
-
-After that, you need to download the [avro-tools] jar file and copy it in the root folder of the `transformer` project,
-
-then run the following commands from `terminal`, to generate `java` classes for each specific schema:
-
-```bash
-java -jar ./java/transformer/avro-tools-1.11.3.jar compile schema ./java/transformer/src/main/resources/avro/cdc-customers-v1.avsc ./java/transformer/src/main/java
-```
-```bash
-java -jar ./java/transformer/avro-tools-1.11.3.jar compile schema ./java/transformer/src/main/resources/avro/cdc-customers-key-v1.avsc ./java/transformer/src/main/java
-```
-```bash
-java -jar ./java/transformer/avro-tools-1.11.3.jar compile schema ./java/transformer/src/main/resources/avro/Customer-Transformer.avsc ./java/transformer/src/main/java
-```
+## Topic and schema creation
+* Any Kafka producer (that includes a Kafka Streams application) is capable of creating a topic if it does not exist and automatically registering the schema with registry
+* In general, it is advisable to do so beforehand. For the purpose of this execute, you may rely on the automatic behaviour.
+* However, if you prefer to do it manually, you can follow the steps below
 
 Before starting the application we also need to register the new `Customer-Transformed-Topic` schema for the `customer-transformed-topic`, 
 go to the [Control Center](http://localhost:9021/), click on the **cluster card**, choose `Topics` from the left menu
@@ -46,19 +27,24 @@ after the topic is created, go to the `Schema` tab for the topic and for the `va
 contents of the [Customer-Transformed.avsc](./transformer/src/main/resources/avro/Customer-Transformer.avsc), and click on
 the `Create button`.
 
+## The exercise
 
-Now, we are ready to consume the events from the `cdc.public.customers` topic using Kafka Streams,
-it will take the cdc event and convert it to a new message of type `Customer`, and finally publishes that to the `customer-transformed-topic`.
+Now, we are ready to consume the events from the `cdc.public.customers` topic using Kafka Streams.
+It will take the cdc event and convert it to a new message of type `Customer`, and finally publish that to the `customer-transformed-topic`.
 
 
-Follow the steps you learned in the [exercise 5](../../exercise5/dotnet/README.md) to create you Kafka Stream.
-If you want to create the destination topic for this application, by hand, checkout [exercise 2](../../exercise2/README.md)
+Follow the steps you learned in the [exercise 5](../../exercise5/dotnet/README.md) to create your Kafka Streams application.
+If you want to create the destination topic for this application by hand using the CLI, checkout [exercise 2](../../exercise2/README.md)
 
-we are now ready to implement the stream topology:
+We are now ready to implement the stream topology:
 
 1. Map the values from the cdc representation to a `Customer` event, using the `mapValues`
 2. Change the old key (`customer_id`) to a new key `username`, using `map` and return `KeyValue.pair`
-3. publish to the destination topic `customer-transformed-topic`
+3. Publish to the destination topic `customer-transformed-topic`
+4. Hint: You will want to serialize the key using a regular String-Serde for the key and the default SpecificAvroSerde for the value. To use the default serializer, you can pass `null` as an argument for the serializer:
+```java
+.to("output-topic-name", Produced.with(Serdes.String(), null)); 
+```
 
 
 <details>

@@ -1,13 +1,7 @@
 package io.squer.services;
 
-import Transformer.Models.Address;
-import Transformer.Models.Customer;
-import cdc.public$.customers.Envelope;
-import cdc.public$.customers.Key;
-import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient;
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
-import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
-import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
+import java.util.Properties;
+import java.util.UUID;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
@@ -15,76 +9,93 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
-
-import java.util.Properties;
-import java.util.UUID;
+import transformer.models.Address;
+import transformer.models.Customer;
 
 public class TransformerService {
 
-    private final Properties properties;
-    static final String CDC_TOPIC = "cdc.public.customers";
-    static final String TRANSFORMER_TOPIC = "customer-transformed-topic";
+  private final Properties properties;
+  static final String CDC_TOPIC = "cdc.public.customers";
+  static final String TRANSFORMER_TOPIC = "customer-transformed-topic";
 
-    public TransformerService(Properties props) {
-        properties = props;
-    }
+  public TransformerService(Properties props) {
+    properties = props;
+  }
 
-    public void Run() {
+  public void run() {
 
-        final StreamsBuilder builder = new StreamsBuilder();
+    final StreamsBuilder builder = new StreamsBuilder();
 
-        CachedSchemaRegistryClient schemaRegistryClient = new CachedSchemaRegistryClient(
-                properties.getProperty(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG).toString(),
-                AbstractKafkaAvroSerDeConfig.MAX_SCHEMAS_PER_SUBJECT_DEFAULT);
+    /**
+     * To consume the stream, you will need something along the lines of:
+     *  KStream<cdc.public$.customers.Key, cdc.public$.customers.Envelope> sourceStream = builder.stream(
+     *         CDC_TOPIC);
+     *
+     *  sourceStream.peek((key, value) -> {
+     *       System.out.println("Key: " + key);
+     *       System.out.println("Value before: " + value.getBefore());
+     *       System.out.println("Value after: " + value.getAfter());
+     *     });
+     */
+    KStream<cdc.public$.customers.Key, cdc.public$.customers.Envelope> sourceStream = builder.stream(
+        CDC_TOPIC);
 
-        KStream<Key, Envelope> sourceStream = builder.stream(CDC_TOPIC);
+    sourceStream.peek((key, value) -> {
+      System.out.println("Key: " + key);
+      System.out.println("Value before: " + value.getBefore());
+      System.out.println("Value after: " + value.getAfter());
+    });
 
-        sourceStream
-                .mapValues(envelope -> {
-                            Address deliveryAddress = Address.newBuilder()
-                                    .setLien1(envelope.getAfter().getDeliveryAddress())
-                                    .setZipcode(envelope.getAfter().getDeliveryZipcode())
-                                    .setCity(envelope.getAfter().getDeliveryCity())
-                                    .build();
+    sourceStream
+        .mapValues(TransformerService::mapCustomer)
+        .map((k, v) -> KeyValue.pair(v.getId().toString(), v))
+        .to(TRANSFORMER_TOPIC,
+            Produced.with(Serdes.String(), null)); //TODO: include this tip in the readme or comment
 
-                            Address billingAddress = envelope.getAfter().getBillingAddress() == null
-                                    ? Address.newBuilder()
-                                    .setLien1(envelope.getAfter().getDeliveryAddress())
-                                    .setZipcode(envelope.getAfter().getDeliveryZipcode())
-                                    .setCity(envelope.getAfter().getDeliveryCity())
-                                    .build()
-                                    : Address.newBuilder()
-                                    .setLien1(envelope.getAfter().getBillingAddress())
-                                    .setZipcode(envelope.getAfter().getBillingZipcode())
-                                    .setCity(envelope.getAfter().getBillingCity())
-                                    .build();
+    // TODO: implement the stream topology
 
-                            String[] names = envelope.getAfter().getFullName().toString().split(" ");
-                            String firstName = names[0];
-                            String lastName = names.length > 1 ? names[1] : names[0];
+    Topology topology = builder.build();
 
-                            return Customer.newBuilder()
-                                    .setId(UUID.fromString(envelope.getAfter().getCustomerId().toString()))
-                                    .setUsername(envelope.getAfter().getUserName())
-                                    .setFirstName(firstName)
-                                    .setLastName(lastName)
-                                    .setEmail(envelope.getAfter().getEmail())
-                                    .setDefaultDeliveryAddress(deliveryAddress)
-                                    .setDefaultBillingAddress(billingAddress)
-                                    .build();
-                        }
+    KafkaStreams streams = new KafkaStreams(topology, properties);
 
-                )
-                .map((k, v) -> KeyValue.pair(v.getUsername().toString(), v))
-                .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), new SpecificAvroSerde<>(schemaRegistryClient)));
+    // attach shutdown handler to catch control-c
+    Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
 
-        Topology topology = builder.build();
+    streams.start();
+  }
 
-        KafkaStreams streams = new KafkaStreams(topology, properties);
+  private static Customer mapCustomer(cdc.public$.customers.Envelope envelope) {
+    cdc.public$.customers.Value updatedValue = envelope.getAfter();
+    Address deliveryAddress = Address.newBuilder()
+        .setLine1(updatedValue.getDeliveryAddress())
+        .setZipcode(updatedValue.getDeliveryZipcode())
+        .setCity(updatedValue.getDeliveryCity())
+        .build();
 
-        // attach shutdown handler to catch control-c
-        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+    Address billingAddress = updatedValue.getBillingAddress() == null
+        ? Address.newBuilder()
+        .setLine1(updatedValue.getDeliveryAddress())
+        .setZipcode(updatedValue.getDeliveryZipcode())
+        .setCity(updatedValue.getDeliveryCity())
+        .build()
+        : Address.newBuilder()
+            .setLine1(updatedValue.getBillingAddress())
+            .setZipcode(updatedValue.getBillingZipcode())
+            .setCity(updatedValue.getBillingCity())
+            .build();
 
-        streams.start();
-    }
+    String[] names = updatedValue.getFullName().split(" ");
+    String firstName = names[0];
+    String lastName = names.length > 1 ? names[1] : names[0];
+
+    return Customer.newBuilder()
+        .setId(UUID.fromString(updatedValue.getCustomerId()))
+        .setUsername(updatedValue.getUserName())
+        .setFirstName(firstName)
+        .setLastName(lastName)
+        .setEmail(updatedValue.getEmail())
+        .setDefaultDeliveryAddress(deliveryAddress)
+        .setDefaultBillingAddress(billingAddress)
+        .build();
+  }
 }

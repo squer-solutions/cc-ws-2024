@@ -9,7 +9,7 @@
             "type": "string"
           },
           {
-            "name": "Lien1",
+            "name": "Line1",
             "type": "string"
           },
           {
@@ -50,6 +50,6 @@
     }
   ],
   "name": "Customer",
-  "namespace": "Transformer.Models",
+  "namespace": "transformer.models",
   "type": "record"
 }

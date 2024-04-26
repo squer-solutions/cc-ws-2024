@@ -1,22 +1,21 @@
 {
-  "type": "record",
-  "name": "Envelope",
-  "namespace": "cdc.public.customers",
+  "connect.name": "cdc.public.customers.Envelope",
+  "connect.version": 1,
   "fields": [
     {
+      "default": null,
       "name": "before",
       "type": [
         "null",
         {
-          "type": "record",
-          "name": "Value",
+          "connect.name": "cdc.public.customers.Value",
           "fields": [
             {
               "name": "customer_id",
               "type": {
-                "type": "string",
+                "connect.name": "io.debezium.data.Uuid",
                 "connect.version": 1,
-                "connect.name": "io.debezium.data.Uuid"
+                "type": "string"
               }
             },
             {
@@ -48,59 +47,57 @@
               "type": "string"
             },
             {
+              "default": null,
               "name": "billing_address",
               "type": [
                 "null",
                 "string"
-              ],
-              "default": null
+              ]
             },
             {
+              "default": null,
               "name": "billing_zipcode",
               "type": [
                 "null",
                 "string"
-              ],
-              "default": null
+              ]
             },
             {
+              "default": null,
               "name": "billing_city",
               "type": [
                 "null",
                 "string"
-              ],
-              "default": null
+              ]
             },
             {
+              "default": 0,
               "name": "ts",
               "type": {
-                "type": "long",
-                "connect.version": 1,
                 "connect.default": 0,
-                "connect.name": "io.debezium.time.MicroTimestamp"
-              },
-              "default": 0
+                "connect.name": "io.debezium.time.MicroTimestamp",
+                "connect.version": 1,
+                "type": "long"
+              }
             }
           ],
-          "connect.name": "cdc.public.customers.Value"
+          "name": "Value",
+          "type": "record"
         }
-      ],
-      "default": null
+      ]
     },
     {
+      "default": null,
       "name": "after",
       "type": [
         "null",
         "Value"
-      ],
-      "default": null
+      ]
     },
     {
       "name": "source",
       "type": {
-        "type": "record",
-        "name": "Source",
-        "namespace": "io.debezium.connector.postgresql",
+        "connect.name": "io.debezium.connector.postgresql.Source",
         "fields": [
           {
             "name": "version",
@@ -119,32 +116,32 @@
             "type": "long"
           },
           {
+            "default": "false",
             "name": "snapshot",
             "type": [
               {
-                "type": "string",
-                "connect.version": 1,
+                "connect.default": "false",
+                "connect.name": "io.debezium.data.Enum",
                 "connect.parameters": {
                   "allowed": "true,last,false,incremental"
                 },
-                "connect.default": "false",
-                "connect.name": "io.debezium.data.Enum"
+                "connect.version": 1,
+                "type": "string"
               },
               "null"
-            ],
-            "default": "false"
+            ]
           },
           {
             "name": "db",
             "type": "string"
           },
           {
+            "default": null,
             "name": "sequence",
             "type": [
               "null",
               "string"
-            ],
-            "default": null
+            ]
           },
           {
             "name": "schema",
@@ -155,31 +152,33 @@
             "type": "string"
           },
           {
+            "default": null,
             "name": "txId",
             "type": [
               "null",
               "long"
-            ],
-            "default": null
+            ]
           },
           {
+            "default": null,
             "name": "lsn",
             "type": [
               "null",
               "long"
-            ],
-            "default": null
+            ]
           },
           {
+            "default": null,
             "name": "xmin",
             "type": [
               "null",
               "long"
-            ],
-            "default": null
+            ]
           }
         ],
-        "connect.name": "io.debezium.connector.postgresql.Source"
+        "name": "Source",
+        "namespace": "io.debezium.connector.postgresql",
+        "type": "record"
       }
     },
     {
@@ -187,21 +186,21 @@
       "type": "string"
     },
     {
+      "default": null,
       "name": "ts_ms",
       "type": [
         "null",
         "long"
-      ],
-      "default": null
+      ]
     },
     {
+      "default": null,
       "name": "transaction",
       "type": [
         "null",
         {
-          "type": "record",
-          "name": "block",
-          "namespace": "event",
+          "connect.name": "event.block",
+          "connect.version": 1,
           "fields": [
             {
               "name": "id",
@@ -216,13 +215,14 @@
               "type": "long"
             }
           ],
-          "connect.version": 1,
-          "connect.name": "event.block"
+          "name": "block",
+          "namespace": "event",
+          "type": "record"
         }
-      ],
-      "default": null
+      ]
     }
   ],
-  "connect.version": 1,
-  "connect.name": "cdc.public.customers.Envelope"
+  "name": "Envelope",
+  "namespace": "cdc.public.customers",
+  "type": "record"
 }

@@ -1,0 +1,16 @@
+{
+  "connect.name": "cdc.public.customers.Key",
+  "fields": [
+    {
+      "name": "customer_id",
+      "type": {
+        "connect.name": "io.debezium.data.Uuid",
+        "connect.version": 1,
+        "type": "string"
+      }
+    }
+  ],
+  "name": "Key",
+  "namespace": "cdc.public.customers",
+  "type": "record"
+}

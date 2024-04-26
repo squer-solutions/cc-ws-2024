@@ -1,20 +1,20 @@
 # Putting it Altogether
 
-In the [Exercise 4](../exercise4/README.md), we have learned how to set up a CDC pipeline and in 
-[Exercise 5](../exercise5) about what is Kafka Streams and how they are working. 
+In [exercise 4](../exercise4/README.md), we have learned how to set up a CDC pipeline and in 
+[exercise 5](../exercise5) about what Kafka Streams is and how they are working. 
 
-In this Exercise we will put all of them together to push the changes from the 
+In this exercise we will put all of them together to push the changes from the 
 [legacy application](../../legacy-app/SQUER.Workshop.LegacyApp/Dockerfile) to our new services.
 
 To bring up all your environments use this [docker-compose file](docker-compose.yaml).
 
-**Reminder**: open terminal in `exercise6` path and type the following command: 
+**Reminder**: open your terminal in `exercise6` path and type the following command: 
 
 ```bash
 docker compose up -d --build 
 ```
 
-Then you need to activate the CDC for `customers` table:
+Then you need to activate CDC for `customers` table:
 
 ```http request
 ### Create a SOURCE connector from Postgres

@@ -7,7 +7,7 @@ import org.apache.kafka.streams.StreamsConfig;
 import java.util.Properties;
 
 public class Main {
-    static final String STREAMS_APPLICATION_ID = "my-streams3";
+    static final String STREAMS_APPLICATION_ID = "my-first-streams";
     static final String BOOTSTRAP_SERVERS_CONFIG = "localhost:9092";
     static final String CLIENT_ID_CONFIG = "streams-squerify-client-example";
 
@@ -17,7 +17,7 @@ public class Main {
 
         StreamingAppWorker worker = new StreamingAppWorker(props);
 
-        worker.Run();
+        worker.run();
     }
 
 

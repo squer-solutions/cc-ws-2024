@@ -1,8 +1,14 @@
 # Kafka Connect 
 
+## Building images with docker
+Some images in this section need to be built. To do this, simply run docker compose with the `--build` flag:
+```bash
+docker compose up -d --build
+```
+
 ## Spin up a Database
 
-To add a postgres database to your existing docker compose files, add the following part to them:
+To add a postgres database to your existing docker compose files, add the following part to it:
 
 ```yaml
   postgresql:
@@ -19,13 +25,18 @@ To add a postgres database to your existing docker compose files, add the follow
       - kafka_network
 ```
 
-Use a user interface of choice if you want to explore the database, to connect using terminal: 
+Use a user interface of choice if you want to explore the database. Alternatively, to connect using the terminal: 
 
 ```bash
 docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
 ```
 
-then run you sql queries: 
+To list the all tables:
+```bash
+\dt
+```
+
+Then run you sql queries: 
 
 ```bash
 select * from customers;
@@ -79,6 +90,9 @@ This request will return a list of active connectors in this container
 ```http request
 GET http://localhost:8083/connectors
 ```
+```bash
+curl localhost:8083/connectors
+```
 
 To create a **source connector** run the following command: 
 
@@ -104,7 +118,30 @@ Content-Type: application/json
   "value.converter.schemas.enable": "false",
   "value.converter.schema.registry.url": "http://schema-registry:8081"
 }
+```
+```bash
+curl -X PUT \
+  localhost:8083/connectors/jdbc_source_connector_customers/config \
+  -H 'Content-Type: application/json' \
+  -v \
+  -d '{
+  "tasks.max": "1",
+  "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+  "connection.url": "jdbc:postgresql://postgres:5432/squer_db",
+  "connection.user": "postgres",
+  "connection.password": "postgres",
+  
+  "mode": "timestamp",
+  "timestamp.column.name": "ts",
+  
+  "table.whitelist": "customers", 
+  "topic.prefix": "postgres_customers_",
 
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schemas.enable": "false",
+  "value.converter.schema.registry.url": "http://schema-registry:8081"
+}'
 ```
 
 ## Control Center
@@ -136,11 +173,11 @@ add the following lines in your docker-compose file and run `docker compose up`
       PORT: 9021
 ```
 
-Now you coudld navigate around and see topics, connectors, etc.
+Now you can navigate around and see topics, connectors, etc.
 
-if you check carefully you will see that there are messages in you topic;
-go to your postgres database update a customer or insert a new one, then get back to topics and refresh, 
-there should be a new message.
+When you check carefully you will see that there are messages in your topic. <br>
+Go to your postgres database and update a customer or insert a new one, then get back to topics and hit refresh. <br> 
+If everything is working correctly, you will see a new record with the updated/inserted information.
 
 Take a careful look, what is weird? Yes, That's right, the messages do not have `key`, here transformers could help to
 convert a column into a message key.
@@ -150,8 +187,11 @@ Drop the existing connector first:
 ```http request
 DELETE http://localhost:8083/connectors/jdbc_source_connector_customers
 ```
+```bash
+curl -X DELETE localhost:8083/connectors/jdbc_source_connector_customers -v
+```
 
-and add the following lines to the `body` of the curl/http command for creating a new connector:
+And add the following lines to the `body` of the curl/http command for creating a new connector:
 
 ```json
 "transforms": "copyFieldToKey, extractKeyFromStruct",
@@ -161,10 +201,10 @@ and add the following lines to the `body` of the curl/http command for creating 
 "transforms.extractKeyFromStruct.field": "user_name"
 ```
 
-Here we set a pipeline of transformers, an string of comma-separated values, then for each transfomer in the pipeline 
+Here we set a pipeline of transformers and string of comma-separated values. Then, for each transfomer in the pipeline 
 we have defined what it should do.
 
-The first one copies the value of the specified field into a  struct, that looks like 
+The first one copies the value of the specified field into a struct, that looks like 
 `Struct{user_name=<value_of_the_column>}` and the second one extracts the field from this struct.
 
 Now, again change something in the postgres data, and compare the result with the previous messages.
@@ -183,7 +223,6 @@ You could change the `transforms` pipeline, and add settings for the new `maskSs
 
 ```json
 "transforms": "copyFieldToKey, extractKeyFromStruct, maskSsn",
-
 "transforms.maskSsn.type": "org.apache.kafka.connect.transforms.MaskField$Value",
 "transforms.maskSsn.fields": "ssn",
 "transforms.maskSsn.replacement": "xxxx-xxxxxx"
@@ -193,7 +232,7 @@ You could change the `transforms` pipeline, and add settings for the new `maskSs
 ## Congratulations
 
 Great work! So far we have created a `JDBC Source Connector` that pushes messages automatically to a topic,
-when the `ts` filed in the database gets updated! 
+when the `ts` field in the database gets updated! 
 
 ## Related Documents
 

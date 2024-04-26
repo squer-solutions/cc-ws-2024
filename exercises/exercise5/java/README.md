@@ -6,6 +6,12 @@ bear in mind to expose a public port for the hosting environment.
 To get started add the following dependencies to your project (`pom.xml` file):
 
 ```xml
+<repositories>
+    <repository>
+        <id>confluent</id>
+        <url>https://packages.confluent.io/maven/</url>
+    </repository>
+</repositories>
 <dependencies>
     <dependency>
         <groupId>org.apache.kafka</groupId>
@@ -51,7 +57,7 @@ props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.cla
 ```
 
 The above config is passed through the constructor to the `StreamingAppWorker`.
-The next step would be to create the topology of the stream, the following codes will go inside the `Run`
+The next step would be to create the topology of the stream, the following code will go inside the `Run`
 method of the `StreamingAppWorker`
 
 ```java
@@ -62,7 +68,7 @@ KStream<String, String> sourceStream = builder.stream(INPUT_TOPIC);
 
 Now, it is time to build the functionalities for the stream, in this example, we just want to:
 1. Convert the value to upper case
-2. Print it on the Console
+2. Print it to the console
 3. Push it to a destination topic
 
 ```java

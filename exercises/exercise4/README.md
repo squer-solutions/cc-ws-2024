@@ -16,7 +16,7 @@ RUN confluent-hub install --no-prompt confluentinc/kafka-connect-avro-converter:
 In the above-mentioned file, two libraries are installed, one is the [debezium source connector for postgres](https://debezium.io/documentation/reference/stable/connectors/postgresql.html) 
 and the other one is AvroConverter for the connector to use to write to the kafka topics
 
-Afterward, you need to configre the Kafka Connect container to use this image: 
+Afterward, you need to configure the Kafka Connect container to use this image: 
 
 ```yaml
   connect:
@@ -72,7 +72,7 @@ For this workshop, and the development setup, the [Debezium/Postgres](https://hu
 are already enabled to make the CDC setup easier.
 
 In the [Initialization Script](./scripts/database/initialize-database.sql) for the database one line needs to be added to configure postgres 
-to populate the before state of the  records that are changed.
+to populate the `before` state in the captured change events.
 
 ```sql
 ALTER TABLE public.customers REPLICA IDENTITY FULL;
@@ -80,7 +80,7 @@ ALTER TABLE public.customers REPLICA IDENTITY FULL;
 
 ## Create the Connector
 
-Like the previous sample, you could uise http requests to create connectors:
+Like the previous sample, you can use http requests to create connectors:
 
 ```http request
 ### Create a SOURCE connector from Postgres
@@ -107,6 +107,32 @@ Content-Type: application/json
   "value.converter": "io.confluent.connect.avro.AvroConverter",
   "value.converter.schema.registry.url": "http://schema-registry:8081"  
 }
+```
+```bash
+curl -X PUT \
+  localhost:8083/connectors/debezium_source_connector_customers/config \
+  -H 'Content-Type: application/json' \
+  -v \
+  -d '{
+  "tasks.max": "1",
+  "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+  "database.hostname": "postgres",
+  "database.port": "5432",
+  "database.user": "postgres",
+  "database.password": "postgres",
+  "database.dbname": "squer_db",
+  
+  "snapshot.mode": "initial",
+  
+  "table.include.list": "public.customers", 
+  "topic.prefix": "cdc_customers_",
+
+  "key.converter": "io.confluent.connect.avro.AvroConverter",
+  "key.converter.schema.registry.url": "http://schema-registry:8081",
+  "value.converter.schemas.enable": "false",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schema.registry.url": "http://schema-registry:8081"  
+}'
 ```
 
 Connect to your database, either via an IDE of choice or terminal, select a customer and change its data: 

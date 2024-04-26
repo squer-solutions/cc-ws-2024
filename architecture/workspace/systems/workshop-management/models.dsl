@@ -69,7 +69,7 @@ workshopManagement = softwareSystem "The new Workshop Management System" {
         tags async
     }
 
-    webApi.customerTransformedHandler -> customerTransformedTopic "subscribed"{
+    webApi.customerTransformedHandler -> customerTransformedTopic "subscribes to"{
         tags async
     }
     webApi.customerTransformedHandler -> database "saves arriving data"

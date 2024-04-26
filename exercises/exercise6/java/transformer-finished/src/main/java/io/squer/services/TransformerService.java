@@ -37,7 +37,7 @@ public class TransformerService {
 
     sourceStream
         .mapValues(TransformerService::mapCustomer)
-        .map((k, v) -> KeyValue.pair(v.getUsername(), v))
+        .map((k, v) -> KeyValue.pair(v.getUsername().toString(), v))
         .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), null));
 
     Topology topology = builder.build();
@@ -70,12 +70,12 @@ public class TransformerService {
             .setCity(updatedValue.getBillingCity())
             .build();
 
-    String[] names = updatedValue.getFullName().split(" ");
+    String[] names = updatedValue.getFullName().toString().split(" ");
     String firstName = names[0];
     String lastName = names.length > 1 ? names[1] : names[0];
 
     return Customer.newBuilder()
-        .setId(UUID.fromString(updatedValue.getCustomerId()))
+        .setId(UUID.fromString(updatedValue.getCustomerId().toString()))
         .setUsername(updatedValue.getUserName())
         .setFirstName(firstName)
         .setLastName(lastName)

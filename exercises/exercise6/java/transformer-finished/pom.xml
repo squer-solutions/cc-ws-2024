@@ -70,7 +70,6 @@
             </goals>
             <configuration>
               <sourceDirectory>${project.basedir}/src/main/resources/avro</sourceDirectory>
-              <stringType>String</stringType>
               <fieldVisibility>private</fieldVisibility>
             </configuration>
           </execution>

@@ -71,12 +71,19 @@ Now, it is time to build the functionalities for the stream, in this example, we
 2. Print it to the console
 3. Push it to a destination topic
 
+Have a look at the [Kafka Streams documentation](https://kafka.apache.org/20/documentation/streams/developer-guide/dsl-api.html#stateless-transformations) and choose the appropriate method to transform the value.
+
+<details>
+<summary>Solution for the processing logic</summary>
+
 ```java
 sourceStream
     .mapValues(value -> value.toUpperCase())
-    .peek((key, value) -> System.out.println("Value: " + value))
+    .peek((key, value) -> System.out.println("Value: " + value)) // can also use print
     .to(OUTPUT_TOPIC, Produced.with(Serdes.String(), Serdes.String()));
 ```
+
+</details>
 
 Build the topology and start the stream: 
 

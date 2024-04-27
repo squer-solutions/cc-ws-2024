@@ -108,7 +108,7 @@ select * from public.customers;
 ```
 
 ```postgresql
-UPDATE public.customers SET delivery_address = 'Teststrasse 23/2', delivery_zipcode = '1210', delivery_city = 'Wien' WHERE customer_id = '31e7a241-d570-4961-981d-4aea2b20d22e'
+UPDATE public.customers SET delivery_address = 'Teststrasse 23/2', delivery_zipcode = '1210', delivery_city = 'Wien' WHERE customer_id = '31e7a241-d570-4961-981d-4aea2b20d22e';
 ```
 
 Now, you could check the messages via the control center. Make sure the message is populated correctly.

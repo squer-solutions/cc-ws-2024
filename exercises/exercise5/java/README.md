@@ -42,7 +42,7 @@ To get started add the following dependencies to your project (`pom.xml` file):
 In the project there is a file `StreamingAppWorker`, under `io.squer.services` package, it is the background service that will host our code for our data stream.
 
 The first step is to create the configuration and selecting the Serializer and Deserializer for the key and value of the stream should work with;
-since for our example both the key and value are string we will use the following settings, add them inside the `getStreamsConfig` method, in the `Main` class: 
+since for our example both the key and value are string we will use the following settings, add them inside the `getStreamsConfig` method, in the `StreamingAppWorker` class: 
 
 ```java
 // 1. Define the configuration

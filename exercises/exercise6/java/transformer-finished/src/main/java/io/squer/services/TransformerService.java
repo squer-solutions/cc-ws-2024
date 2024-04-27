@@ -4,40 +4,37 @@ import Transformer.Models.Address;
 import Transformer.Models.Customer;
 import cdc.public$.customers.Envelope;
 import cdc.public$.customers.Key;
-import cdc.public$.customers.Value;
-import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient;
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
-
-
 import java.util.Properties;
 import java.util.UUID;
 
 public class TransformerService {
 
+
+    static final String STREAMS_APPLICATION_ID = "transformer-development-app";
+    static final String BOOTSTRAP_SERVERS_CONFIG = "http://localhost:9092";
+    static final String SCHEMA_REGISTRY_URL_CONFIG = "http://localhost:8081";
+    static final String CLIENT_ID_CONFIG = "transformer-development";
     private final Properties properties;
     static final String CDC_TOPIC = "cdc.public.customers";
     static final String TRANSFORMER_TOPIC = "customer-transformed-topic";
 
-    public TransformerService(Properties props) {
-        properties = props;
+    public TransformerService() {
+        properties = getStreamsConfig();
     }
 
     public void run() {
 
         final StreamsBuilder builder = new StreamsBuilder();
-
-        CachedSchemaRegistryClient schemaRegistryClient = new CachedSchemaRegistryClient(
-                properties.getProperty(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG).toString(),
-                AbstractKafkaAvroSerDeConfig.MAX_SCHEMAS_PER_SUBJECT_DEFAULT);
 
         KStream<Key, Envelope> sourceStream = builder.stream(CDC_TOPIC);
 
@@ -50,7 +47,7 @@ public class TransformerService {
         sourceStream
                 .mapValues(TransformerService::mapCustomer)
                 .map((k, v) -> KeyValue.pair(v.getUsername().toString(), v))
-                .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), new SpecificAvroSerde<>(schemaRegistryClient)));
+                .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(),null));
 
         Topology topology = builder.build();
 
@@ -62,9 +59,22 @@ public class TransformerService {
         streams.start();
     }
 
-    private static Customer mapCustomer(Envelope envelope) {
 
-        Value envelopeAfter = envelope.getAfter();
+    private static Properties getStreamsConfig() {
+        Properties props = new Properties();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, STREAMS_APPLICATION_ID);
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_CONFIG);
+        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, SCHEMA_REGISTRY_URL_CONFIG);
+        props.put(StreamsConfig.CLIENT_ID_CONFIG, CLIENT_ID_CONFIG);
+        props.put(AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS, true);
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
+        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
+        return props;
+    }
+
+    private static Customer mapCustomer(cdc.public$.customers.Envelope envelope) {
+
+        cdc.public$.customers.Value envelopeAfter = envelope.getAfter();
 
         Address deliveryAddress = Address.newBuilder()
                 .setLien1(envelopeAfter.getDeliveryAddress())

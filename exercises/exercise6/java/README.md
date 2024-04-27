@@ -4,6 +4,7 @@ After bringing up your environment the first thing you need is to download the s
 `Debezium` connector.
 
 ## Retrieving the schema files
+### Option 1: Using the schema registry API
 
 ```http request
 GET http://localhost:8081/subjects
@@ -25,7 +26,7 @@ schema:
 GET http://localhost:8081/schemas/ids/1
 ```
 
-### Via Confluent Control Center
+### Option 2: Via Confluent Control Center
 * The quickest way to retrieve the current schema for a topic is by downloading it from the control center
 * Open the [ControlCenter](http://localhost:9021/), open the Topics section and find the CDC topic
 * Open the tab "Schema", and in the context menu (...), you can download both the key-schema and the value-schema
@@ -36,6 +37,10 @@ GET http://localhost:8081/schemas/ids/1
     * It is highly recommended to inspect the `pom.xml` in detail to understand which steps are performed
 
 
+## Topic creation and schema registration
+* Kafka streams is capable of creating topics and registering the schema itself
+* However, sometimes you might want to do this steps yourself (not strictly necessary for the purposes of this workshop)
+### Manual topic creation and schema registration
 Before starting the application we also need to register the new `Customer-Transformed-Topic` schema for the `customer-transformed-topic`, 
 go to the [Control Center](http://localhost:9021/), click on the **cluster card**, choose `Topics` from the left menu
 and click on the `+ Add Topic` button, give it the name `customer-transformed-topic` and click on the `Create with defaults` button,
@@ -43,58 +48,27 @@ after the topic is created, go to the `Schema` tab for the topic and for the `va
 contents of the [Customer-Transformed.avsc](./transformer/src/main/resources/avro/Customer-Transformer.avsc), and click on
 the `Create button`.
 
-
+## Kafka streams application
 Now, we are ready to consume the events from the `cdc.public.customers` topic using Kafka Streams,
 it will take the cdc event and convert it to a new message of type `Customer`, and finally publishes that to the `customer-transformed-topic`.
 
 
 Follow the steps you learned in the [exercise 5](../../exercise5/dotnet/README.md) to create you Kafka Stream.
-If you want to create the destination topic for this application, by hand, checkout [exercise 2](../../exercise2/README.md)
 
 we are now ready to implement the stream topology:
 
 1. Map the values from the cdc representation to a `Customer` event, using the `mapValues`
 2. Change the old key (`customer_id`) to a new key `username`, using `map` and return `KeyValue.pair`
-3. publish to the destination topic `customer-transformed-topic`
+3. Publish to the destination topic `customer-transformed-topic`
 
-
+#### Notes
+Try to map the entity on your own first to get a feel how you can work with the generated avro classes.
+After you made your own steps and don't feel like typing everything out, you can use the mapping function provided below.
 <details>
-
-<summary>After completing the previous steps you could use the following for the stream topology</summary>
+<summary>SPOILER: Mapping function</summary>
 
 ```java
-public void run() {
-
-        final StreamsBuilder builder = new StreamsBuilder();
-
-        CachedSchemaRegistryClient schemaRegistryClient = new CachedSchemaRegistryClient(
-                properties.getProperty(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG).toString(),
-                AbstractKafkaAvroSerDeConfig.MAX_SCHEMAS_PER_SUBJECT_DEFAULT);
-
-        KStream<Key, Envelope> sourceStream = builder.stream(CDC_TOPIC);
-
-        sourceStream.peek((key, value) -> {
-            System.out.println("Key: " + key);
-            System.out.println("Value before: " + value.getBefore());
-            System.out.println("Value after: " + value.getAfter());
-        });
-
-        sourceStream
-                .mapValues(TransformerService::mapCustomer)
-                .map((k, v) -> KeyValue.pair(v.getUsername().toString(), v))
-                .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(), new SpecificAvroSerde<>(schemaRegistryClient)));
-
-        Topology topology = builder.build();
-
-        KafkaStreams streams = new KafkaStreams(topology, properties);
-
-        // attach shutdown handler to catch control-c
-        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
-
-        streams.start();
-    }
-
-    private static Customer mapCustomer(Envelope envelope) {
+private static Customer mapCustomer(Envelope envelope) {
 
         Value envelopeAfter = envelope.getAfter();
 
@@ -130,6 +104,40 @@ public void run() {
                 .setDefaultBillingAddress(billingAddress)
                 .build();
     }
+```
+</details>
+
+Please try to solve this exercise yourself to get the most of it.
+<details>
+<summary>Should you get stuck, you can have a look at the solution here:</summary>
+
+```java
+public void run() {
+
+  final StreamsBuilder builder = new StreamsBuilder();
+
+  KStream<Key, Envelope> sourceStream = builder.stream(CDC_TOPIC);
+
+  sourceStream.peek((key, value) -> {
+    System.out.println("Key: " + key);
+    System.out.println("Value before: " + value.getBefore());
+    System.out.println("Value after: " + value.getAfter());
+  });
+
+  sourceStream
+          .mapValues(TransformerService::mapCustomer)
+          .map((k, v) -> KeyValue.pair(v.getUsername().toString(), v))
+          .to(TRANSFORMER_TOPIC, Produced.with(Serdes.String(),null));
+
+  Topology topology = builder.build();
+
+  KafkaStreams streams = new KafkaStreams(topology, properties);
+
+  // attach shutdown handler to catch control-c
+  Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+
+  streams.start();
+}
 
 ```
 </details>

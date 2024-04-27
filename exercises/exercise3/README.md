@@ -8,7 +8,7 @@ docker compose up -d --build
 
 ## Spin up a Database
 
-To add a postgres database to your existing docker compose files, add the following part to it:
+In the docker-compose of this exercise, the following container has been added to spin up a postgres database.
 
 ```yaml
   postgresql:
@@ -36,7 +36,7 @@ To list the all tables:
 \dt
 ```
 
-Then run you sql queries: 
+Then run you can sql queries: 
 
 ```bash
 select * from customers;
@@ -48,7 +48,7 @@ select * from orders;
 
 ## Create Kafka Connect Image
 
-To create the Kafka Connect you need to have the following in your docker-compose file:
+For adding Kafka Connect, the following has been added to the docker-compose.
 
 ```yaml
   connect:
@@ -92,6 +92,11 @@ GET http://localhost:8083/connectors
 ```
 ```bash
 curl localhost:8083/connectors
+```
+Expected response:
+```
+curl localhost:8083/connectors
+[]% # Returns an empty array since no connectors exist at the moment.    
 ```
 
 To create a **source connector** run the following command: 
@@ -143,11 +148,21 @@ curl -X PUT \
   "value.converter.schema.registry.url": "http://schema-registry:8081"
 }'
 ```
+Expected response:
+```
+> PUT /connectors/jdbc_source_connector_customers/config HTTP/1.1
+> Host: localhost:8083
+> User-Agent: curl/8.4.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 616
+> 
+< HTTP/1.1 201 Created
+```
 
 ## Control Center
 
-It would be nice if there were a way to be able to see all these information in one place as a dashboard, well, there is,
-add the following lines in your docker-compose file and run `docker compose up`
+While the terminal is an all-powerful tool, sometimes it would be nice to see these information in one place as a dashboard. Thankfully, we can use the Confluent Control Center to do just that. The docker-compose has already beene extended with these lines:
 
 ```yaml
   control-center:
@@ -190,6 +205,15 @@ DELETE http://localhost:8083/connectors/jdbc_source_connector_customers
 ```bash
 curl -X DELETE localhost:8083/connectors/jdbc_source_connector_customers -v
 ```
+Expected response:
+```
+> DELETE /connectors/jdbc_source_connector_customers HTTP/1.1
+> Host: localhost:8083
+> User-Agent: curl/8.4.0
+> Accept: */*
+> 
+< HTTP/1.1 204 No Content
+```
 
 And add the following lines to the `body` of the curl/http command for creating a new connector:
 
@@ -199,6 +223,46 @@ And add the following lines to the `body` of the curl/http command for creating 
 "transforms.copyFieldToKey.fields": "user_name",
 "transforms.extractKeyFromStruct.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
 "transforms.extractKeyFromStruct.field": "user_name"
+```
+
+Full curl request:
+
+```bash
+curl -X PUT \
+  localhost:8083/connectors/jdbc_source_connector_customers/config \
+  -H 'Content-Type: application/json' \
+  -v \
+  -d '{
+  "tasks.max": "1",
+  "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+  "connection.url": "jdbc:postgresql://postgres:5432/squer_db",
+  "connection.user": "postgres",
+  "connection.password": "postgres",
+  "mode": "timestamp",
+  "timestamp.column.name": "ts",
+  "table.whitelist": "customers", 
+  "topic.prefix": "postgres_customers_",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schemas.enable": "false",
+  "value.converter.schema.registry.url": "http://schema-registry:8081",
+  "transforms": "copyFieldToKey, extractKeyFromStruct",
+  "transforms.copyFieldToKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+  "transforms.copyFieldToKey.fields": "user_name",
+  "transforms.extractKeyFromStruct.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+  "transforms.extractKeyFromStruct.field": "user_name"
+}'
+```
+Expected response:
+```
+> PUT /connectors/jdbc_source_connector_customers/config HTTP/1.1
+> Host: localhost:8083
+> User-Agent: curl/8.4.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 957
+>
+< HTTP/1.1 201 Created
 ```
 
 Here we set a pipeline of transformers and string of comma-separated values. Then, for each transfomer in the pipeline 
@@ -212,8 +276,7 @@ Now, again change something in the postgres data, and compare the result with th
 ## Exercise
 
 1. Create a JDBC source connector for the orders table. Use `customer_id` as message key.
-2. Use a mask transformer to [mask](https://kafka.apache.org/documentation.html#org.apache.kafka.connect.transforms.MaskField)
-`ssn` field with `xxxx-xxxxxx`
+2. Use a mask transformer to [mask](https://kafka.apache.org/documentation.html#org.apache.kafka.connect.transforms.MaskField) the `order_id` field with `xxxx-xxxxxx`
 
 <details>
 
@@ -224,7 +287,7 @@ You could change the `transforms` pipeline, and add settings for the new `maskSs
 ```json
 "transforms": "copyFieldToKey, extractKeyFromStruct, maskSsn",
 "transforms.maskSsn.type": "org.apache.kafka.connect.transforms.MaskField$Value",
-"transforms.maskSsn.fields": "ssn",
+"transforms.maskSsn.fields": "order_id",
 "transforms.maskSsn.replacement": "xxxx-xxxxxx"
 ```
 </details>

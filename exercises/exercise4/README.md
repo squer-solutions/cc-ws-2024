@@ -1,9 +1,14 @@
-# CDC & Debezium 
+# CDC & Debezium
 
 ## Spin up a Debezium Connect Container
 
-To use the Debezium connectors we need to have a custom docker file in which 
-the Postgres Connector is installed or is accessible in that container. This is how the [Dockerfile](./connect/Dockerfile) will look like: 
+Before starting, have a close look at the new docker compose for this exercise.
+
+To use the Debezium connectors we need to have a custom docker file in which
+the Postgres Connector is installed or is accessible in that container. This is how
+the [Dockerfile](./connect/Dockerfile) will look like:
+
+These changes are already reflected in the docker-compose of this exercise.
 
 ```dockerfile
 FROM confluentinc/cp-kafka-connect:7.6.1
@@ -13,69 +18,19 @@ RUN confluent-hub install --no-prompt confluentinc/kafka-connect-avro-converter:
 
 ```
 
-In the above-mentioned file, two libraries are installed, one is the [debezium source connector for postgres](https://debezium.io/documentation/reference/stable/connectors/postgresql.html) 
+In the above-mentioned file, two libraries are installed, one is
+the [debezium source connector for postgres](https://debezium.io/documentation/reference/stable/connectors/postgresql.html)
 and the other one is AvroConverter for the connector to use to write to the kafka topics
 
-Afterward, you need to configure the Kafka Connect container to use this image: 
+For this workshop, and the development setup, the [Debezium/Postgres](https://hub.docker.com/r/debezium/postgres) images
+is used, and in that some configurations are already enabled to make the CDC setup easier.
 
-```yaml
-  connect:
-    image: local-image/cc-ws-2024-debezium-connect-jdbc:latest
-    build:
-      context: .
-      dockerfile: ./connect/Dockerfile
-    container_name: connect
-    depends_on:
-      - broker
-      - schema-registry
-      - postgresql
-    ports:
-      - "8083:8083"
-    environment:
-      CONNECT_BOOTSTRAP_SERVERS: broker:29092 # this should refer to the advertised listeners on the broker with PLAINTEXT
-      CONNECT_REST_PORT: 8083
-      CONNECT_NAME: "connect-cc-ws-2024"
-      CONNECT_REST_ADVERTISED_HOST_NAME: "cc-ws-connect"
-      CONNECT_GROUP_ID: compose-kafka-connect-group
-      
-      CONNECT_CONFIG_STORAGE_TOPIC: _kafka-connect-configs
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_CONFIG_STORAGE_PARTITIONS: 25
-      CONNECT_OFFSET_STORAGE_TOPIC: _kafka-connect-offsets
-      CONNECT_OFFSET_STORAGE_PARTITIONS: 25
-      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_STATUS_STORAGE_TOPIC: _kafka-connect-status
-      CONNECT_STATUS_STORAGE_PARTITIONS: 25
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-      
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
-      
-      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-
-      CONNECT_INTERNAL_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_INTERNAL_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      
-      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
-      CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR"
-    
-    networks:
-      - kafka_network
-```
-The important part of this file is the `build` part, that uses the Dockerfile to create the container.
-
-For this workshop, and the development setup, the [Debezium/Postgres](https://hub.docker.com/r/debezium/postgres) images is used, and in that some configurations 
-are already enabled to make the CDC setup easier.
-
-In the [Initialization Script](./scripts/database/initialize-database.sql) for the database one line needs to be added to configure postgres 
-to populate the `before` state in the captured change events.
+In the [Initialization Script](./scripts/database/initialize-database.sql) for the database one line has been added to
+configure postgres to populate the `before` state in the captured change events.
 
 ```sql
-ALTER TABLE public.customers REPLICA IDENTITY FULL;
+ALTER TABLE public.customers
+    REPLICA IDENTITY FULL;
 ```
 
 ## Create the Connector
@@ -108,6 +63,7 @@ Content-Type: application/json
   "value.converter.schema.registry.url": "http://schema-registry:8081"  
 }
 ```
+
 ```bash
 curl -X PUT \
   localhost:8083/connectors/debezium_source_connector_customers/config \
@@ -135,30 +91,50 @@ curl -X PUT \
 }'
 ```
 
-Connect to your database, either via an IDE of choice or terminal, select a customer and change its data: 
+Expected response:
+
+```
+> PUT /connectors/debezium_source_connector_customers/config HTTP/1.1
+> Host: localhost:8083
+> User-Agent: curl/8.4.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 690
+> 
+< HTTP/1.1 201 Created
+```
+
+Connect to your database, either via an IDE of choice or terminal, select a customer and change its data:
 
 ```bash
 docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
 ```
 
 ```postgresql
-select * from public.customers;
+select *
+from public.customers;
 ```
 
 ```postgresql
-UPDATE public.customers SET delivery_address = 'Teststrasse 23/2', delivery_zipcode = '1210', delivery_city = 'Wien' WHERE customer_id = '31e7a241-d570-4961-981d-4aea2b20d22e'
+UPDATE public.customers
+SET delivery_address = 'Teststrasse 23/2',
+    delivery_zipcode = '1210',
+    delivery_city    = 'Wien'
+WHERE customer_id = '31e7a241-d570-4961-981d-4aea2b20d22e';
 ```
 
 Now, you could check the messages via the control center. Make sure the message is populated correctly.
 
 ## Exercise
 
-Activate CDC for the `public.orders` table and create a separate connector for it
+Your task is to create a new connector that captures changes from the orders `public.orders` table.
+
+To also capture `before-events`, don't forget to set the `REPLICA IDENTITY` to `FULL`
 
 ## Congratulations
 
-Great work! So far we have activated `CDC` and created a `Debezium Postgres Connector` that captures the changes 
-and pushes them automatically to a target topic, when **any field** in your record changes. 
+Great work! So far we have activated `CDC` and created a `Debezium Postgres Connector` that captures the changes
+and pushes them automatically to a target topic, when **any field** in your record changes.
 
 ## Related Documents
 

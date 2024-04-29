@@ -12,7 +12,7 @@ dotnet add package Streamiz.Kafka.Net
 In the project there is a file `StreamingAppWorker`, it is the background service that will host our code for our data stream.
 
 The first step is to create the configuration and selecting the Serializer and Deserializer for the key and value of the stream should work with;
-since for our example both the key and value are string we will use the following settings: 
+since for our example both the key and value are string we will use the following settings, add them inside the `ExecuteAsync` method, in the `StreamingAppWorker` class:
 
 ```csharp
 // 1. Define the configuration

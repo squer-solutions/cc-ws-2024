@@ -42,17 +42,7 @@ public class TransformerService : BackgroundService
         var cdcStream = streamBuilder.Stream(kafkaConfig.CdcTopic,
             new SchemaAvroSerDes<Key>(), new SchemaAvroSerDes<Envelope>(), named: "Transformer - Import");
 
-        cdcStream.MapValues(envelope => Customer.Create(
-                Guid.Parse(envelope.after.customer_id), envelope.after.user_name,
-                envelope.after.full_name,
-                envelope.after.email,
-                new Address(envelope.after.delivery_address, envelope.after.delivery_zipcode,
-                    envelope.after.delivery_city),
-                string.IsNullOrEmpty(envelope.after.billing_address)
-                    ? null
-                    : new Address(envelope.after.billing_address, envelope.after.billing_zipcode,
-                        envelope.after.billing_city)
-            ))
+        cdcStream.MapValues(MapToCustomer)
             .Map((_, v) => KeyValuePair.Create(v!.Username, v))
             .To<StringSerDes, SchemaAvroSerDes<Customer>>(kafkaConfig.TransformerTopic,
                 named: "Transformer Export");
@@ -62,5 +52,20 @@ public class TransformerService : BackgroundService
         // 4. Create and start the kafka Stream
         var stream = new KafkaStream(topology, config);
         await stream.StartAsync(stoppingToken);
+    }
+
+    private static Customer? MapToCustomer(Envelope envelope)
+    {
+        return Customer.Create(
+            Guid.Parse(envelope.after.customer_id), envelope.after.user_name,
+            envelope.after.full_name,
+            envelope.after.email,
+            new Address(envelope.after.delivery_address, envelope.after.delivery_zipcode,
+                envelope.after.delivery_city),
+            string.IsNullOrEmpty(envelope.after.billing_address)
+                ? null
+                : new Address(envelope.after.billing_address, envelope.after.billing_zipcode,
+                    envelope.after.billing_city)
+        );
     }
 }

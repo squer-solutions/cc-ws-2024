@@ -24,10 +24,10 @@ public class TransformerService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var kafkaConfig = _options.CurrentValue;
-        
+
         // 1. Define the configuration
         // 2. Create Serde instances
-        var config = new StreamConfig<SchemaAvroSerDes<Key>, SchemaAvroSerDes<Value>>
+        var streamConfig = new StreamConfig<SchemaAvroSerDes<Key>, SchemaAvroSerDes<Value>>
         {
             ApplicationId = kafkaConfig.ApplicationId,
             BootstrapServers = string.Join(",", kafkaConfig.Brokers),
@@ -44,13 +44,12 @@ public class TransformerService : BackgroundService
 
         cdcStream.MapValues(MapToCustomer)
             .Map((_, v) => KeyValuePair.Create(v!.Username, v))
-            .To<StringSerDes, SchemaAvroSerDes<Customer>>(kafkaConfig.TransformerTopic,
-                named: "Transformer Export");
+            .To<StringSerDes, SchemaAvroSerDes<Customer>>(kafkaConfig.TransformerTopic, named: "Transformer Export");
 
         var topology = streamBuilder.Build();
 
         // 4. Create and start the kafka Stream
-        var stream = new KafkaStream(topology, config);
+        var stream = new KafkaStream(topology, streamConfig);
         await stream.StartAsync(stoppingToken);
     }
 

@@ -41,7 +41,7 @@ GET http://localhost:8081/schemas/ids/1
 
 ## Topic and schema creation
 * Any Kafka producer (that includes a Kafka Streams application) is capable of creating a topic if it does not exist and automatically registering the schema with registry
-* In general, it is advisable to do so beforehand. For the purpose of this execute, you may rely on the automatic behaviour.
+* In general, it is advisable to manually register the schemas beforehand. For the purpose of this execute, you may rely on the automatic behaviour.
 * However, if you prefer to do it manually, you can follow the steps below
 ### Manual topic creation and schema registration
 Before starting the application we also need to register the new `Customer-Transformed-Topic` schema for the `customer-transformed-topic`, 
@@ -54,7 +54,6 @@ the `Create button`.
 ## Kafka streams application
 Now, we are ready to consume the events from the `cdc.public.customers` topic using Kafka Streams,
 it will take the cdc event and convert it to a new message of type `Customer`, and finally publishes that to the `customer-transformed-topic`.
-
 
 Follow the steps you learned in the [exercise 5](../../exercise5/dotnet/README.md) to create you Kafka Stream.
 

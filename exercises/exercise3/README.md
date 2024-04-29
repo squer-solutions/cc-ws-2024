@@ -1,7 +1,9 @@
-# Kafka Connect 
+# Kafka Connect
 
 ## Building images with docker
+
 Some images in this section need to be built. To do this, simply run docker compose with the `--build` flag:
+
 ```bash
 docker compose up -d --build
 ```
@@ -32,11 +34,12 @@ docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
 ```
 
 To list the all tables:
+
 ```bash
 \dt
 ```
 
-Then run you can sql queries: 
+Then you can run sql queries:
 
 ```bash
 select * from customers;
@@ -90,16 +93,18 @@ This request will return a list of active connectors in this container
 ```http request
 GET http://localhost:8083/connectors
 ```
+
 ```bash
 curl localhost:8083/connectors
 ```
+
 Expected response:
 ```
 curl localhost:8083/connectors
 []% # Returns an empty array since no connectors exist at the moment.    
 ```
 
-To create a **source connector** run the following command: 
+To create a **source connector** run the following command:
 
 ```http request
 PUT http://localhost:8083/connectors/jdbc_source_connector_customers/config
@@ -111,11 +116,11 @@ Content-Type: application/json
   "connection.url": "jdbc:postgresql://postgres:5432/squer_db",
   "connection.user": "postgres",
   "connection.password": "postgres",
-  
+ 
   "mode": "timestamp",
   "timestamp.column.name": "ts",
-  
-  "table.whitelist": "customers", 
+ 
+  "table.whitelist": "customers",
   "topic.prefix": "postgres_customers_",
 
   "key.converter": "org.apache.kafka.connect.storage.StringConverter",
@@ -124,6 +129,7 @@ Content-Type: application/json
   "value.converter.schema.registry.url": "http://schema-registry:8081"
 }
 ```
+
 ```bash
 curl -X PUT \
   localhost:8083/connectors/jdbc_source_connector_customers/config \
@@ -191,7 +197,7 @@ While the terminal is an all-powerful tool, sometimes it would be nice to see th
 Now you can navigate around and see topics, connectors, etc.
 
 When you check carefully you will see that there are messages in your topic. <br>
-Go to your postgres database and update a customer or insert a new one, then get back to topics and hit refresh. <br> 
+Go to your postgres database and update a customer or insert a new one, then get back to topics and hit refresh. <br>
 If everything is working correctly, you will see a new record with the updated/inserted information.
 
 Take a careful look, what is weird? Yes, That's right, the messages do not have `key`, here transformers could help to
@@ -202,6 +208,7 @@ Drop the existing connector first:
 ```http request
 DELETE http://localhost:8083/connectors/jdbc_source_connector_customers
 ```
+
 ```bash
 curl -X DELETE localhost:8083/connectors/jdbc_source_connector_customers -v
 ```
@@ -225,7 +232,38 @@ And add the following lines to the `body` of the curl/http command for creating 
 "transforms.extractKeyFromStruct.field": "user_name"
 ```
 
-Full curl request:
+Full request:
+
+```http request
+PUT {{CONNECTORS}}/jdbc_source_connector_customers/config
+Content-Type: application/json
+
+{
+  "tasks.max": "1",
+  "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+  "connection.url": "jdbc:postgresql://postgres:5432/squer_db",
+  "connection.user": "postgres",
+  "connection.password": "postgres",
+  
+  "mode": "timestamp",
+  "timestamp.column.name": "ts",
+  
+  "table.whitelist": "customers", 
+  "topic.prefix": "postgres_customers_",
+
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schemas.enable": "false",
+  "value.converter.schema.registry.url": "http://schema-registry:8081",
+
+  "transforms": "copyFieldToKey, extractKeyFromStruct",
+  "transforms.copyFieldToKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+  "transforms.copyFieldToKey.fields": "user_name",
+  "transforms.extractKeyFromStruct.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+  "transforms.extractKeyFromStruct.field": "user_name"
+  
+}
+```
 
 ```bash
 curl -X PUT \

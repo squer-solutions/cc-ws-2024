@@ -1,10 +1,12 @@
-# CDC & Debezium 
+# CDC & Debezium
 
 ## Spin up a Debezium Connect Container
+
 Before starting, have a close look at the new docker compose for this exercise.
 
-To use the Debezium connectors we need to have a custom docker file in which 
-the Postgres Connector is installed or is accessible in that container. This is how the [Dockerfile](./connect/Dockerfile) will look like:
+To use the Debezium connectors we need to have a custom docker file in which
+the Postgres Connector is installed or is accessible in that container. This is how
+the [Dockerfile](./connect/Dockerfile) will look like:
 
 These changes are already reflected in the docker-compose of this exercise.
 
@@ -16,17 +18,19 @@ RUN confluent-hub install --no-prompt confluentinc/kafka-connect-avro-converter:
 
 ```
 
-In the above-mentioned file, two libraries are installed, one is the [debezium source connector for postgres](https://debezium.io/documentation/reference/stable/connectors/postgresql.html) 
+In the above-mentioned file, two libraries are installed, one is
+the [debezium source connector for postgres](https://debezium.io/documentation/reference/stable/connectors/postgresql.html)
 and the other one is AvroConverter for the connector to use to write to the kafka topics
 
-For this workshop, and the development setup, the [Debezium/Postgres](https://hub.docker.com/r/debezium/postgres) images is used, and in that some configurations 
-are already enabled to make the CDC setup easier.
+For this workshop, and the development setup, the [Debezium/Postgres](https://hub.docker.com/r/debezium/postgres) images
+is used, and in that some configurations are already enabled to make the CDC setup easier.
 
-In the [Initialization Script](./scripts/database/initialize-database.sql) for the database one line has been added to configure postgres 
-to populate the `before` state in the captured change events.
+In the [Initialization Script](./scripts/database/initialize-database.sql) for the database one line has been added to
+configure postgres to populate the `before` state in the captured change events.
 
 ```sql
-ALTER TABLE public.customers REPLICA IDENTITY FULL;
+ALTER TABLE public.customers
+    REPLICA IDENTITY FULL;
 ```
 
 ## Create the Connector
@@ -59,6 +63,7 @@ Content-Type: application/json
   "value.converter.schema.registry.url": "http://schema-registry:8081"  
 }
 ```
+
 ```bash
 curl -X PUT \
   localhost:8083/connectors/debezium_source_connector_customers/config \
@@ -85,7 +90,9 @@ curl -X PUT \
   "value.converter.schema.registry.url": "http://schema-registry:8081"  
 }'
 ```
+
 Expected response:
+
 ```
 > PUT /connectors/debezium_source_connector_customers/config HTTP/1.1
 > Host: localhost:8083
@@ -97,31 +104,37 @@ Expected response:
 < HTTP/1.1 201 Created
 ```
 
-Connect to your database, either via an IDE of choice or terminal, select a customer and change its data: 
+Connect to your database, either via an IDE of choice or terminal, select a customer and change its data:
 
 ```bash
 docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
 ```
 
 ```postgresql
-select * from public.customers;
+select *
+from public.customers;
 ```
 
 ```postgresql
-UPDATE public.customers SET delivery_address = 'Teststrasse 23/2', delivery_zipcode = '1210', delivery_city = 'Wien' WHERE customer_id = '31e7a241-d570-4961-981d-4aea2b20d22e';
+UPDATE public.customers
+SET delivery_address = 'Teststrasse 23/2',
+    delivery_zipcode = '1210',
+    delivery_city    = 'Wien'
+WHERE customer_id = '31e7a241-d570-4961-981d-4aea2b20d22e';
 ```
 
 Now, you could check the messages via the control center. Make sure the message is populated correctly.
 
 ## Exercise
+
 Your task is to create a new connector that captures changes from the orders `public.orders` table.
 
 To also capture `before-events`, don't forget to set the `REPLICA IDENTITY` to `FULL`
 
 ## Congratulations
 
-Great work! So far we have activated `CDC` and created a `Debezium Postgres Connector` that captures the changes 
-and pushes them automatically to a target topic, when **any field** in your record changes. 
+Great work! So far we have activated `CDC` and created a `Debezium Postgres Connector` that captures the changes
+and pushes them automatically to a target topic, when **any field** in your record changes.
 
 ## Related Documents
 

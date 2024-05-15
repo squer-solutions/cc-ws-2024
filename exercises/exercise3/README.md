@@ -323,10 +323,10 @@ Now, again change something in the postgres data, and compare the result with th
 You could change the `transforms` pipeline, and add settings for the new `maskSsn` transformer:  
 
 ```json
-"transforms": "copyFieldToKey, extractKeyFromStruct, maskSsn",
-"transforms.maskSsn.type": "org.apache.kafka.connect.transforms.MaskField$Value",
-"transforms.maskSsn.fields": "order_id",
-"transforms.maskSsn.replacement": "xxxx-xxxxxx"
+"transforms": "copyFieldToKey, extractKeyFromStruct, maskOrderId",
+"transforms.maskOrderId.type": "org.apache.kafka.connect.transforms.MaskField$Value",
+"transforms.maskOrderId.fields": "order_id",
+"transforms.maskOrderId.replacement": "xxxx-xxxxxx"
 ```
 </details>
 

@@ -23,7 +23,7 @@ CREATE TABLE orders
     order_id    UUID                    NOT NULL PRIMARY KEY,
     customer_id UUID                    NOT NULL,
     quantity    INT                     NOT NULL,
-    unit_price  DECIMAL                 NOT NULL,
+    unit_price  DECIMAL(9,2)                 NOT NULL,
     ts          TIMESTAMP DEFAULT NOW() NOT NULL
 );
 
